@@ -1,0 +1,101 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "description": "Api Backend FAFG, desarrollo en NodeJS",
+      "version": "1.0.0",
+      "title": "FAFG-OQSoluttions",
+      "termsOfService": "http://oqsolutionsgt.com/",
+      "contact": {
+        "email": "contacto@oqsolutionsgt.com"
+      }
+    },
+    "host": "localhost:3100",
+    "basePath": "/api",
+    "tags": [
+      {
+        "name": "usuario",
+        "description": "Operaciones sobre usuario"
+      }
+    ],
+    "schemes": [
+      "http"
+    ],
+    "paths": {
+      "/user": {
+        "post": {
+          "tags": [
+            "usuario"
+          ],
+          "summary": "Creacion",
+          "description": "Crea un usuario en la base de datos, parametros de body",
+          "operationId": "createUser",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "Usuario Creado",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          ],
+          "responses": {
+            "default": {
+              "description": "successful operation"
+            }
+          }
+        }
+      }
+    },
+    "securityDefinitions": {
+      "petstore_auth": {
+        "type": "oauth2",
+        "authorizationUrl": "http://petstore.swagger.io/oauth/dialog",
+        "flow": "implicit",
+        "scopes": {
+          "write:pets": "modify pets in your account",
+          "read:pets": "read your pets"
+        }
+      },
+      "api_key": {
+        "type": "apiKey",
+        "name": "api_key",
+        "in": "header"
+      }
+    },
+    "definitions": {
+      "Order": {
+        "type": "object",
+        "properties": {
+          "usuarioId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "usuario": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "bool"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "body": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
