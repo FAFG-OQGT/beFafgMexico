@@ -6,7 +6,7 @@ var transporter = nodemailer.createTransport({
       secure: true, 
     auth: {
       user: 'notificaciones@fafg.org',
-      pass: 'Identificaciones'
+      
     }
   });
 
