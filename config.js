@@ -26,7 +26,7 @@ module.exports = {
     direccionEmpresa: "MEXICO",
 
     urlLogoEmpresa:
-      "https://fafg.org/wp-content/themes/yootheme/cache/logo-fafg-full-88314a02-0a86aa52.png",
+      "https://crih.qosolutionsgt.com/CRIHLOGO.png",
     urlImgFooter: "https://did.fafg.org/imagePassword.jpg",
     urlWebResetPassWord: "https://did.fafg.org/auth/update-password/",
     minutosVigenciaEnlace: 10,
