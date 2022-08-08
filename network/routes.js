@@ -12,13 +12,13 @@ const osamenta = require("../api/components/osamenta/network");
 const victima = require("../api/components/victima/network");
 const coincidencia = require("../api/components/coincidencia/network");
 const identificadoSmih = require("../api/components/identificadoSmih/network");
-const identificadoOst = require("../api/components/identificadoOst/network");
 const reporte = require("../api/components/reporte/network");
 const archivo = require("../api/components/archivo/network");
 const graph = require("../api/components/graph/network");
 const auth = require("../api/components/auth/network");
 const swaggerDoc = require("../api/swagger.json");
 const errors = require("../network/errors");
+const resetPass=require("../api/components/resetpassword/network");
 
 const routes = function (server) {
   server.use(bodyParser.json());
@@ -60,11 +60,7 @@ const routes = function (server) {
     passport.authenticate("jwt", { session: false }),
     identificadoSmih
   );
-  server.use(
-    "/identificadoOst",
-    passport.authenticate("jwt", { session: false }),
-    identificadoOst
-  );
+
   server.use(
     "/catalogo",
     passport.authenticate("jwt", { session: false }),
@@ -85,7 +81,10 @@ const routes = function (server) {
     passport.authenticate("jwt", { session: false }),
     graph
   );
-
+  server.use(
+    "/resetpass",
+    resetPass
+  );
   server.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
   server.use(errors);
 };

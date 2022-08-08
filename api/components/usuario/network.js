@@ -13,6 +13,22 @@ const get = (req, res, next) => {
     .catch(next);
 };
 
+const getPermisos = (req, res, next) => {
+  controller
+    .listPermisos(req)
+    .then((usuario) => {
+      response.succes(req, res, usuario, 200);
+    })
+    .catch(next);
+};
+const getAccesoXObjetoId = (req, res, next) => {
+  controller
+    .accesoXObjeto(req)
+    .then((usuario) => {
+      response.succes(req, res, usuario, 200);
+    })
+    .catch(next);
+};
 const put = (req, res, next) => {
   controller
     .change(req)
@@ -47,8 +63,19 @@ const putCambioRol = (req, res, next) => {
     })
     .catch(next);
 };
-router.get("/", get);
+const getInfo = (req, res, next) => {
+  controller
+    .getInfoUser(req)
+    .then((respose) => {
+      response.succes(req, res, respose, 201);
+    })
+    .catch(next);
+};
 
+router.get("/", get);
+router.get("/permisos", getPermisos);
+router.get("/accesoXId", getAccesoXObjetoId);
+router.get("/getInfo", getInfo);
 router.put("/:usuarioId", put);
 router.put("/cambioRol/:usuarioId", putCambioRol);
 router.post("/", post);

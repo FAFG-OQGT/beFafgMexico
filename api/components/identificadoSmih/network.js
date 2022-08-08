@@ -2,7 +2,7 @@ const express = require("express");
 
 const response = require("../../../network/response");
 const controller = require("./controller");
-const upload = require('../../media/multer.config');
+const upload = require("../../media/multer.config");
 
 const router = express.Router();
 
@@ -34,7 +34,7 @@ const postArchivo = (req, res, next) => {
 };
 
 const getArchivo = (req, res, next) => {
-  console.log('pasa');
+  console.log("pasa");
   controller
     .getArchivo(req)
     .then((archivo) => {
@@ -90,16 +90,16 @@ const put = (req, res, next) => {
 
 const deleteArchivo = (req, res, next) => {
   controller
-  .deleteArchivo(req)
-  .then((archivo) => {
-    response.succes(req, res, archivo, 201);
-  })
-  .catch(next);
-}
+    .deleteArchivo(req)
+    .then((archivo) => {
+      response.succes(req, res, archivo, 201);
+    })
+    .catch(next);
+};
 
 router.post("/", post);
 router.post("/confirmInsert", postConfirm);
-router.post("/archivo",upload.single("File"), postArchivo);
+router.post("/archivo", upload.single("File"), postArchivo);
 router.post("/deleteArchivo", deleteArchivo);
 router.get("/", get);
 router.get("/archivo", getArchivo);

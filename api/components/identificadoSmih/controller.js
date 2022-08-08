@@ -2,7 +2,7 @@ var sequelize = require("sequelize");
 var moment = require("moment");
 const controllerArchivo = require("../archivo/controller");
 var stream = require("stream");
-const { getFileFromPath } = require("../../functions/fileFunction");
+const {getFileFromPath} = require("../../functions/fileFunction");
 const error = require("../../../utils/error");
 const email = require("../mail/controller");
 const config = require("../../../config");
@@ -31,7 +31,7 @@ const {
   RepoDoc,
   Token,
   TipoContexto,
-  Puesto,
+  Puesto
 } = require("../../../store/mysql");
 
 const cadenaCorreo = async (pTipo, pToken) => {
@@ -68,9 +68,9 @@ const cadenaCorreoDinamica = async (data) => {
 const nombreUsuario = async (pUsuarioId) => {
   const usuario = await Usuario.findOne({
     attributes: {
-      exclude: ["estadoId", "fechaHoraIngreso", "firmaUsuario"],
+      exclude: ["estadoId", "fechaHoraIngreso", "firmaUsuario"]
     },
-    where: { usuarioId: pUsuarioId, estadoId: 1 },
+    where: {usuarioId: pUsuarioId, estadoId: 1}
   });
 
   return usuario.usuario;
@@ -78,7 +78,7 @@ const nombreUsuario = async (pUsuarioId) => {
 
 const codigoVictima = async (pCodigoVictima) => {
   const victima = await Victima.findOne({
-    where: { victimaId: pCodigoVictima, estadoId: 1 },
+    where: {victimaId: pCodigoVictima, estadoId: 1}
   });
 
   return victima.codigoVictima;
@@ -86,7 +86,7 @@ const codigoVictima = async (pCodigoVictima) => {
 
 const nombreVictima = async (pCodigoVictima) => {
   const victima = await Victima.findOne({
-    where: { victimaId: pCodigoVictima, estadoId: 1 },
+    where: {victimaId: pCodigoVictima, estadoId: 1}
   });
 
   return victima.nombreVictima;
@@ -94,7 +94,7 @@ const nombreVictima = async (pCodigoVictima) => {
 
 const codigoOsamenta = async (pCodigoOsamenta) => {
   const osamenta = await Osamenta.findOne({
-    where: { osamentaId: pCodigoOsamenta, estadoId: 1 },
+    where: {osamentaId: pCodigoOsamenta, estadoId: 1}
   });
 
   return (
@@ -110,9 +110,9 @@ const codigoOsamenta = async (pCodigoOsamenta) => {
 const correoUsuario = async (pUsuarioId) => {
   const usuario = await Usuario.findOne({
     attributes: {
-      exclude: ["estadoId", "fechaHoraIngreso", "firmaUsuario"],
+      exclude: ["estadoId", "fechaHoraIngreso", "firmaUsuario"]
     },
-    where: { usuarioId: pUsuarioId, estadoId: 1 },
+    where: {usuarioId: pUsuarioId, estadoId: 1}
   });
 
   return usuario.email;
@@ -125,7 +125,7 @@ const insert = async (req) => {
     operacion: "CREACIONIDENTIFICADOSMIH",
     valorToken: token,
     estadoId: 1,
-    usuarioIngresoId: req.body.usuarioIngresoId,
+    usuarioIngresoId: req.body.usuarioIngresoId
   };
   const emailUser = await correoUsuario(req.body.usuarioIngresoId);
   const tokenIns = Token.create(valores);
@@ -139,8 +139,8 @@ const confirmInsert = async (req) => {
     where: {
       valorToken: req.body.token,
       estadoId: 1,
-      usuarioIngresoId: req.body.usuarioIngresoId,
-    },
+      usuarioIngresoId: req.body.usuarioIngresoId
+    }
   });
 
   if (!valida) {
@@ -157,7 +157,7 @@ const confirmInsert = async (req) => {
     Victima: codVictima,
     Osamenta: codOsamenta,
     Coincidencia: identificadoSmih.coincidenciaId,
-    pathReport: "../../PlantillasHtml/SmIh/CreaIdent.html",
+    pathReport: "../../PlantillasHtml/SmIh/CreaIdent.html"
   };
   const cuerpo = await cadenaCorreoDinamica(dataConfirmacion);
   email.sendMail(
@@ -175,12 +175,12 @@ const insertCoincidenciaArchivo = async (vals) => {
 
 const updateCoincidenciaArchivo = async (key, id) => {
   return (archivo = await CoincidenciaDocumento.update(
-    { estadoId: 3 },
+    {estadoId: 3},
     {
       where: {
         coincidenciaId: id,
-        urlDocumento: key,
-      },
+        urlDocumento: key
+      }
     }
   ));
 };
@@ -192,14 +192,14 @@ const getFolder = async (pDocumentoId) => {
         model: RepoDoc,
         as: "RepoDoc",
         attributes: {
-          exclude: ["fechaHoraIngreso"],
-        },
-      },
+          exclude: ["fechaHoraIngreso"]
+        }
+      }
     ],
     where: {
       documentoId: pDocumentoId,
-      estadoId: 1,
-    },
+      estadoId: 1
+    }
   });
   var path;
   folder.map((data) => {
@@ -221,7 +221,7 @@ const insertArchivo = async (req) => {
         eTag: bucket.ETag,
         mimetype: req.file.mimetype,
         usuarioIngresoId: req.body.usuarioIngresoId,
-        estadoId: 1,
+        estadoId: 1
       };
       return insertCoincidenciaArchivo(valores);
     })
@@ -269,7 +269,7 @@ const getArchivoB64 = async (key) => {
 
 const getGenogramaRep = async (id) => {
   let genograma = CoincidenciaDocumento.findOne({
-    where: { coincidenciaId: id, documentoId: 2, estadoId: 1 },
+    where: {coincidenciaId: id, documentoId: 2, estadoId: 1}
   });
 
   return genograma;
@@ -277,7 +277,7 @@ const getGenogramaRep = async (id) => {
 
 const getFotos = async (id, pDocumentoId) => {
   let fotosExhu = CoincidenciaDocumento.findAll({
-    where: { coincidenciaId: id, documentoId: pDocumentoId, estadoId: 1 },
+    where: {coincidenciaId: id, documentoId: pDocumentoId, estadoId: 1}
   });
 
   return fotosExhu;
@@ -303,10 +303,12 @@ const getReporte = async (req) => {
     edadPmIni,
     edadPmFin,
     tipoCaso,
+    tipoCausaMuerte,
     valEdadAm,
     catEdadAM,
     catEdadPm,
     resumenH = "";
+  denticion = "";
   if (!ident.fechaConfirmacion) {
     fechaConf = "null";
   } else {
@@ -412,6 +414,13 @@ const getReporte = async (req) => {
   } else {
     tipoCaso = ident.TipoCasoDid.descripcion;
   }
+
+  if (!ident.CausaMuerte.descripcion) {
+    tipoCausaMuerte = "null";
+  } else {
+    tipoCausaMuerte = ident.CausaMuerte.descripcion;
+  }
+
   if (!ident.resumenHecho) {
     resumenH = "null";
   } else {
@@ -429,8 +438,13 @@ const getReporte = async (req) => {
   let rutaGenograma = await getGenogramaRep(ident.Coincidencia.coincidenciaId);
   var htmlGeno = "";
   if (rutaGenograma) {
-    const valGenograma = await getArchivoB64(rutaGenograma.urlDocumento);
-    htmlGeno = `<tr><td><img src="data:image/png;base64,${valGenograma}" width="200" height="160"></td> </tr>`;
+    var valGenograma = {};
+    try {
+      valGenograma = await getArchivoB64(rutaGenograma.urlDocumento);
+      htmlGeno = `<tr><td><img src="data:image/png;base64,${valGenograma}" width="100%" ></td> </tr>`;
+    } catch (error) {
+      htmlGeno = `<tr><td>No posee Genograma</td> </tr>`;
+    }
   } else {
     htmlGeno = `<tr><td>No posee Genograma</td> </tr>`;
   }
@@ -442,7 +456,7 @@ const getReporte = async (req) => {
     for (let index = 0; index < rutaFotosExh.length; index++) {
       let ruta = rutaFotosExh[index].urlDocumento;
       valExhuma = await getArchivoB64(ruta);
-      htmlExhumacion += `<tr><td><img src="data:image/png;base64,${valExhuma}" width="200" height="160"></td></tr> `;
+      htmlExhumacion += `<tr><td><img src="data:image/png;base64,${valExhuma}" width="80%"></td></tr> `;
     }
   } else {
     htmlExhumacion = `<tr><td>No posee Fotos Exhumacion</td> </tr>`;
@@ -452,15 +466,13 @@ const getReporte = async (req) => {
     valExtend = "";
   let rutaFotosExtend = await getFotos(ident.Coincidencia.coincidenciaId, 29);
   if (rutaFotosExtend.length > 0) {
-    console.log(rutaFotosExtend);
     for (let index = 0; index < rutaFotosExtend.length; index++) {
       let ruta = rutaFotosExtend[index].urlDocumento;
       valExtend = await getArchivoB64(ruta);
-      htmlExtendido += `<tr><td><img src="data:image/png;base64,${valExtend}" width="200" height="160"></td></tr> `;
+      htmlExtendido += `<tr><td><img src="data:image/png;base64,${valExtend}" width="80%"></td></tr> `;
     }
   } else {
     htmlExtendido = `<tr><td>No posee Fotos Extendido</td> </tr>`;
-    console.log(htmlExtendido);
   }
 
   let htmlTrauma,
@@ -470,7 +482,7 @@ const getReporte = async (req) => {
     for (let index = 0; index < rutaFotosTrauma.length; index++) {
       let ruta = rutaFotosTrauma[index].urlDocumento;
       valTrauma = await getArchivoB64(ruta);
-      htmlTrauma += `<tr><td><img src="data:image/png;base64,${valTrauma}" width="200" height="160"></td></tr> `;
+      htmlTrauma += `<tr><td><img src="data:image/png;base64,${valTrauma}" width="80%"></td></tr> `;
     }
   } else {
     htmlTrauma = `<tr><td>No posee Fotos de Trauma</td> </tr>`;
@@ -483,7 +495,7 @@ const getReporte = async (req) => {
     for (let index = 0; index < rutaFotosDent.length; index++) {
       let ruta = rutaFotosDent[index].urlDocumento;
       valDent = await getArchivoB64(ruta);
-      htmlDent += `<tr><td><img src="data:image/png;base64,${valDent}" width="200" height="160"></td></tr> `;
+      htmlDent += `<tr><td><img src="data:image/png;base64,${valDent}" width="80%"></td></tr> `;
     }
   } else {
     htmlDent = `<tr><td>No posee Fotos de Dentinción</td> </tr>`;
@@ -496,7 +508,7 @@ const getReporte = async (req) => {
     for (let index = 0; index < rutaFotosRopa.length; index++) {
       let ruta = rutaFotosRopa[index].urlDocumento;
       valRopa = await getArchivoB64(ruta);
-      htmlRopa += `<tr><td><img src="data:image/png;base64,${valRopa}" width="200" height="160"></td></tr> `;
+      htmlRopa += `<tr><td><img src="data:image/png;base64,${valRopa}" width="80%"></td></tr> `;
     }
   } else {
     htmlRopa = `<tr><td>No posee Fotos de Ropa</td> </tr>`;
@@ -504,7 +516,7 @@ const getReporte = async (req) => {
 
   var htmlFirmaIdent = `<img src="data:image/jpg;base64,${ident.Usuario.firmaUsuario.toString(
     "base64"
-  )}" width="200" height="160">`;
+  )}" width="80%">`;
 
   htmlRep = htmlRep.replace(
     "@IDENTIFICADOID",
@@ -546,9 +558,9 @@ const getReporte = async (req) => {
   );
   htmlRep = htmlRep.replace("@FECHAEXHUMACION", fechaExhu);
   htmlRep = htmlRep.replace("@SEXOPOST", sexo);
-  htmlRep = htmlRep.replace("@DENTICION", "");
   htmlRep = htmlRep.replace("@TRAUMAS", trauma);
-  htmlRep = htmlRep.replace("@CAUSAMUERTE", tipoCaso);
+  htmlRep = htmlRep.replace("@CAUSAMUERTE", tipoCausaMuerte);
+  htmlRep = htmlRep.replace("@DENTICION", ident.anotacionDatosOdont);
   htmlRep = htmlRep.replace("@OBSERVACIONES", ident.observaciones);
   htmlRep = htmlRep.replace("@LRI", ident.Coincidencia.lr);
   htmlRep = htmlRep.replace("@PAP", apriori);
@@ -586,7 +598,7 @@ const getReporte = async (req) => {
   var data = {
     AcceptRanges: "bytes",
     ContentType: "application/pdf",
-    Body: stream,
+    Body: stream
   };
 
   return data;
@@ -604,114 +616,114 @@ const list = async (req) => {
       {
         model: Osamenta,
         as: "Osamenta",
-        exclude: ["estadoId", "fechaHoraIngreso"],
+        exclude: ["estadoId", "fechaHoraIngreso"]
       },
       {
         model: Victima,
         as: "Victima",
-        exclude: ["estadoId", "fechaHoraIngreso"],
+        exclude: ["estadoId", "fechaHoraIngreso"]
       },
       {
         model: Coincidencia,
         as: "Coincidencia",
-        exclude: ["estadoId", "fechaHoraIngreso"],
+        exclude: ["estadoId", "fechaHoraIngreso"]
       },
       {
         model: Genero,
         as: "Sexo",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: GrupoEtario,
         as: "GrupoEtario",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: GrupoEtnolinguistico,
         as: "GrupoEtnolinguistico",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: TipoCasoDid,
         as: "TipoCasoDid",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: ValorEdad,
         as: "ValorEdadAM",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: ValorEdad,
         as: "ValorPM",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: TraumaCirc,
         as: "TraumaCirc",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: DatosOdont,
         as: "DatosOdont",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: RegionAnatomica,
         as: "RegionAnatomica",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: CausaMuerte,
         as: "CausaMuerte",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: Municipio,
         as: "MuniDesap",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso", "departamentoId"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso", "departamentoId"]
+        }
       },
       {
         model: Departamento,
         as: "DeptoDesap",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso", "paisId"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso", "paisId"]
+        }
       },
       {
         model: Estado,
         as: "Estado",
         attributes: {
-          exclude: ["fechaHoraIngreso"],
-        },
+          exclude: ["fechaHoraIngreso"]
+        }
       },
       {
         model: Usuario,
         as: "Usuario",
-        attributes: ["usuarioId", "usuario"],
-      },
+        attributes: ["usuarioId", "usuario"]
+      }
     ],
     where: sequelize.literal(
       `(identificadoSmihId like '%${filtro}%')` +
@@ -736,7 +748,7 @@ const list = async (req) => {
         ` or (DeptoDesap.descripcion like '%${filtro}%')`
     ),
 
-    order: [["identificadoSmihId", "DESC"]],
+    order: [["identificadoSmihId", "DESC"]]
   }));
 };
 
@@ -751,20 +763,20 @@ const listArchivo = async (req) => {
             model: RepoDoc,
             as: "RepoDoc",
             attributes: {
-              exclude: ["fechaHoraIngreso"],
-            },
-          },
+              exclude: ["fechaHoraIngreso"]
+            }
+          }
         ],
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: Estado,
         as: "Estado",
         attributes: {
-          exclude: ["fechaHoraIngreso"],
-        },
+          exclude: ["fechaHoraIngreso"]
+        }
       },
       {
         model: Usuario,
@@ -776,20 +788,19 @@ const listArchivo = async (req) => {
             "password",
             "personaId",
             "email",
-            "firmaUsuario",
-          ],
-        },
-      },
+            "firmaUsuario"
+          ]
+        }
+      }
     ],
     where: {
       coincidenciaId: req.params.coincidenciaId,
-      estadoId: 1,
-    },
+      estadoId: 1
+    }
   }));
 };
 
 const searchById = async (req) => {
-  console.log("entre a este");
   const identificadoSmih = await IdentificadoSmih.findOne({
     include: [
       {
@@ -800,10 +811,10 @@ const searchById = async (req) => {
             model: TipoContexto,
             as: "TipoContexto",
             attributes: {
-              exclude: ["estadoId", "fechaHoraIngreso"],
-            },
-          },
-        ],
+              exclude: ["estadoId", "fechaHoraIngreso"]
+            }
+          }
+        ]
       },
       {
         model: Osamenta,
@@ -813,17 +824,17 @@ const searchById = async (req) => {
             model: Municipio,
             as: "MuniExhumacion",
             attributes: {
-              exclude: ["estadoId", "fechaHoraIngreso", "departamentoId"],
-            },
+              exclude: ["estadoId", "fechaHoraIngreso", "departamentoId"]
+            }
           },
           {
             model: Departamento,
             as: "DeptoExhumacion",
             attributes: {
-              exclude: ["estadoId", "fechaHoraIngreso"],
-            },
-          },
-        ],
+              exclude: ["estadoId", "fechaHoraIngreso"]
+            }
+          }
+        ]
       },
       {
         model: Victima,
@@ -833,108 +844,108 @@ const searchById = async (req) => {
             model: Municipio,
             as: "MuniLugarHecho",
             attributes: {
-              exclude: ["estadoId", "fechaHoraIngreso", "departamentoId"],
-            },
+              exclude: ["estadoId", "fechaHoraIngreso", "departamentoId"]
+            }
           },
           {
             model: Departamento,
             as: "DeptoLugarHecho",
             attributes: {
-              exclude: ["estadoId", "fechaHoraIngreso"],
-            },
-          },
-        ],
+              exclude: ["estadoId", "fechaHoraIngreso"]
+            }
+          }
+        ]
       },
       {
         model: Genero,
         as: "Sexo",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: GrupoEtario,
         as: "GrupoEtario",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: GrupoEtnolinguistico,
         as: "GrupoEtnolinguistico",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: TipoCasoDid,
         as: "TipoCasoDid",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: ValorEdad,
         as: "ValorEdadAM",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: ValorEdad,
         as: "ValorPM",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: TraumaCirc,
         as: "TraumaCirc",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: DatosOdont,
         as: "DatosOdont",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: RegionAnatomica,
         as: "RegionAnatomica",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: CausaMuerte,
         as: "CausaMuerte",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: Municipio,
         as: "MuniDesap",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso", "departamentoId"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso", "departamentoId"]
+        }
       },
       {
         model: Departamento,
         as: "DeptoDesap",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso", "paisId"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso", "paisId"]
+        }
       },
       {
         model: Estado,
         as: "Estado",
         attributes: {
-          exclude: ["fechaHoraIngreso"],
-        },
+          exclude: ["fechaHoraIngreso"]
+        }
       },
       {
         model: Usuario,
@@ -944,14 +955,14 @@ const searchById = async (req) => {
           {
             model: Puesto,
             as: "Puesto",
-            attributes: ["descripcion"],
-          },
-        ],
-      },
+            attributes: ["descripcion"]
+          }
+        ]
+      }
     ],
     where: {
-      identificadoSmihId: req.params.identificadoSmihId,
-    },
+      identificadoSmihId: req.params.identificadoSmihId
+    }
   });
   if (!identificadoSmih) {
     throw error("No existe el Identificado SmIh", 400);
@@ -962,15 +973,15 @@ const searchById = async (req) => {
 
 const change = async (req) => {
   const identificadoSmihUpdate = await IdentificadoSmih.findOne({
-    where: { identificadoSmihId: req.params.identificadoSmihId },
+    where: {identificadoSmihId: req.params.identificadoSmihId}
   });
   if (!identificadoSmihUpdate) {
     throw error("No existe el Identificado SmIh", 400);
   }
   const result = await IdentificadoSmih.update(req.body, {
     where: {
-      identificadoSmihId: req.params.identificadoSmihId,
-    },
+      identificadoSmihId: req.params.identificadoSmihId
+    }
   });
   if (result > 0) {
     return "Cambio realizado con exito";
@@ -989,5 +1000,5 @@ module.exports = {
   searchById,
   change,
   confirmInsert,
-  deleteArchivo,
+  deleteArchivo
 };

@@ -10,7 +10,7 @@ router(app);
 
 
 
-app.set("AppName", "FAFG Backend");
+app.set("AppName", "CRIH Backend");
 app.set("port", process.env.PORT || "3100");
 
 app.use(bodyParser.json());

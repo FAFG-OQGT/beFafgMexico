@@ -34,6 +34,5 @@ const postCoincidencia = (req, res, next) => {
 
 router.post("/coincidencia", postCoincidencia);
 router.post("/identificadoSmih", postIdentificadoSmih);
-router.post("/identificadoOst", postIdentificadoOst);
 
 module.exports = router;

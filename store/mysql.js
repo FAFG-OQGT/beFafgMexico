@@ -80,6 +80,7 @@ const IdentificadoOstDocumentoModel = require("./models/identificado_ost_documen
 //seguridad
 const TokenModel = require("./models/token");
 const ParametroModel = require("./models/parametro");
+const ResetPassModel = require("./models/reset_password");
 //sincronizacion de objeto a bd
 const Estado = EstadoModel(db, Sequelize);
 const EstadoCivil = EstadoCivilModel(db, Sequelize);
@@ -144,6 +145,7 @@ const IdentificadoOstDocumento = IdentificadoOstDocumentoModel(db, Sequelize);
 //seguridad
 const Token = TokenModel(db, Sequelize);
 const Parametro = ParametroModel(db, Sequelize);
+const ResetPassWord = ResetPassModel(db, Sequelize);
 //Relations
 Usuario.hasMany(UsuarioRol, {foreignKey: "usuarioId"});
 //Relations coincidencias
@@ -287,6 +289,13 @@ Coincidencia.hasMany(DonanteCoincidencia, {
   foreignKey: "coincidenciaId",
   onDelete: "CASCADE",
 });
+
+Coincidencia.belongsTo(Usuario, {
+  as: "Responsable",
+  foreignKey: "responsableId",
+  onDelete: "CASCADE",
+}); 
+
 DonanteCoincidencia.belongsTo(Donante, {
   as: "Donante",
   foreignKey: "donanteId",
@@ -596,6 +605,12 @@ Usuario.belongsTo(Puesto, {
   foreignKey: "puestoId",
 });
 
+ResetPassWord.belongsTo(Estado, {
+  as: "Estado",
+  foreignKey: "estadoId",
+  onDelete: "CASCADE",
+});
+
 //Get data catalogos
 const {
   estados,
@@ -758,5 +773,6 @@ module.exports = {
   Parametro,
   Fio,
   Aplicativo,
-  Puesto
+  Puesto,
+  ResetPassWord
 };

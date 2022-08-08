@@ -40,7 +40,7 @@ const {
   Persona,
   TraumaCirc,
   CausaMuerte,
-  Puesto,
+  Puesto
 } = require("../../../store/mysql");
 
 const cadenaCorreo = async (pUsuario, pVictima, pOsamenta) => {
@@ -71,12 +71,23 @@ const cadenaCorreoDinamica = async (data) => {
   return html;
 };
 
+const getUsuario = async (pUsuarioId) => {
+  const usuario = await Usuario.findOne({
+    attributes: {
+      exclude: ["estadoId", "fechaHoraIngreso", "firmaUsuario", "password"]
+    },
+    where: {usuarioId: pUsuarioId, estadoId: 1}
+  });
+
+  return usuario;
+};
+
 const nombreUsuario = async (pUsuarioId) => {
   const usuario = await Usuario.findOne({
     attributes: {
-      exclude: ["estadoId", "fechaHoraIngreso", "firmaUsuario"],
+      exclude: ["estadoId", "fechaHoraIngreso", "firmaUsuario"]
     },
-    where: {usuarioId: pUsuarioId, estadoId: 1},
+    where: {usuarioId: pUsuarioId, estadoId: 1}
   });
 
   return usuario.usuario;
@@ -84,7 +95,7 @@ const nombreUsuario = async (pUsuarioId) => {
 
 const codigoVictima = async (pCodigoVictima) => {
   const victima = await Victima.findOne({
-    where: {victimaId: pCodigoVictima, estadoId: 1},
+    where: {victimaId: pCodigoVictima, estadoId: 1}
   });
 
   return victima.codigoVictima;
@@ -92,7 +103,7 @@ const codigoVictima = async (pCodigoVictima) => {
 
 const nombreVictima = async (pCodigoVictima) => {
   const victima = await Victima.findOne({
-    where: {victimaId: pCodigoVictima, estadoId: 1},
+    where: {victimaId: pCodigoVictima, estadoId: 1}
   });
 
   return victima.nombreVictima;
@@ -100,7 +111,7 @@ const nombreVictima = async (pCodigoVictima) => {
 
 const codigoOsamenta = async (pCodigoOsamenta) => {
   const osamenta = await Osamenta.findOne({
-    where: {osamentaId: pCodigoOsamenta, estadoId: 1},
+    where: {osamentaId: pCodigoOsamenta, estadoId: 1}
   });
 
   return (
@@ -124,7 +135,7 @@ const insert = async (req) => {
     Usuario: user,
     Victima: codVictima,
     Osamenta: codOsamenta,
-    pathReport: "../../PlantillasHtml/Coincidencia/TokenCreaCoin.html",
+    pathReport: "../../PlantillasHtml/Coincidencia/TokenCreaCoin.html"
   };
   const cuerpo = await cadenaCorreoDinamica(dataConfirmacion);
   email.sendMail(
@@ -138,7 +149,7 @@ const insert = async (req) => {
     nombreVictima: nomVictima,
     codigoAM: codVictima,
     codigoPM: codOsamenta,
-    estadoId: 1,
+    estadoId: 1
   };
   const fio = await Fio.create(fioReq);
 
@@ -161,13 +172,15 @@ const insertSolSeg = async (req) => {
   var solicitud = await SolicitudSeguimiento.create(req.body);
 
   const coincidencia = await Coincidencia.findOne({
-    attributes: ["coincidenciaId", "victimaId", "osamentaId"],
+    attributes: ["coincidenciaId", "victimaId", "osamentaId", "responsableId"],
     where: {
-      coincidenciaId: req.body.coincidenciaId,
-    },
+      coincidenciaId: req.body.coincidenciaId
+    }
   });
 
   const user = await nombreUsuario(solicitud.usuarioIngresoId);
+  const userData = await getUsuario(solicitud.usuarioIngresoId);
+  const userResponsable = await getUsuario(coincidencia.responsableId);
   const codVictima = await codigoVictima(coincidencia.victimaId);
   const codOsamenta = await codigoOsamenta(coincidencia.osamentaId);
   const nomVictima = await nombreVictima(coincidencia.victimaId);
@@ -178,14 +191,30 @@ const insertSolSeg = async (req) => {
     Osamenta: codOsamenta,
     Coincidencia: coincidencia.coincidenciaId,
     pathReport:
-      "../../PlantillasHtml/Coincidencia/SolicitudSeguimientoInbox.html",
+      "../../PlantillasHtml/Coincidencia/SolicitudSeguimientoInbox.html"
   };
 
-  const cuerpo = await cadenaCorreoDinamica(dataConfirmacion);
-  var correos = config.correos.creacionSolicitudSeguimiento
+  let emailsRecipient = [];
+  var correos = config.correos
     ? config.correos.creacionSolicitudSeguimiento
     : config.correos.default;
-  email.sendMail(correos, "Creacion de Solicitud de seguimiento", null, cuerpo);
+  emailsRecipient.push(correos);
+
+  if (userData) {
+    emailsRecipient.push(userData.email);
+  }
+  if (userResponsable) {
+    emailsRecipient.push(userResponsable.email);
+  }
+
+  const cuerpo = await cadenaCorreoDinamica(dataConfirmacion);
+
+  email.sendMail(
+    emailsRecipient.join(";"),
+    "Creacion de Solicitud de seguimiento",
+    null,
+    cuerpo
+  );
   return solicitud;
 };
 
@@ -199,8 +228,8 @@ const updateCoincidenciaArchivo = async (key, id) => {
     {
       where: {
         coincidenciaId: id,
-        urlDocumento: key,
-      },
+        urlDocumento: key
+      }
     }
   ));
 };
@@ -212,14 +241,14 @@ const getFolder = async (pDocumentoId) => {
         model: RepoDoc,
         as: "RepoDoc",
         attributes: {
-          exclude: ["fechaHoraIngreso"],
-        },
-      },
+          exclude: ["fechaHoraIngreso"]
+        }
+      }
     ],
     where: {
       documentoId: pDocumentoId,
-      estadoId: 1,
-    },
+      estadoId: 1
+    }
   });
   var path;
   folder.map((data) => {
@@ -241,7 +270,7 @@ const insertArchivo = async (req) => {
         eTag: bucket.ETag,
         mimetype: req.file.mimetype,
         usuarioIngresoId: req.body.usuarioIngresoId,
-        estadoId: 1,
+        estadoId: 1
       };
       return insertCoincidenciaArchivo(valores);
     })
@@ -276,13 +305,26 @@ const getArchivo = async (req) => {
 
 const flagIndentificado = async (req) => {
   identificado = await IdentificadoSmih.findOne({
-    where: {coincidenciaId: req.params.coincidenciaId},
+    where: {coincidenciaId: req.params.coincidenciaId}
   });
   let flag = false;
   if (identificado) {
     flag = true;
   }
   return flag;
+};
+const listResponsables = async (req) => {
+  return (coincidencias = await Usuario.findAndCountAll({
+    attributes: [
+      ["usuarioId", "responsableId"],
+      ["usuario", "responsable"]
+    ],
+    where: {
+      usuarioId: {
+        [Op.in]: [2, 3, 4, 5, 6, 73]
+      }
+    }
+  }));
 };
 
 const list = async (req) => {
@@ -320,7 +362,8 @@ const list = async (req) => {
         ` or (fechaNotificacionDid like '%${filtro}%')` +
         ` or (fechaConfExc like '%${filtro}%')` +
         ` or (coincidencia.coincidenciaId like '%${filtro}%')` +
-        ` or (marcadoresStr like '%${filtro}%')`
+        ` or (marcadoresStr like '%${filtro}%')` +
+        ` or (Responsable.usuario like '%${filtro}%')`
     ),
 
     distinct: "coincidenciaId",
@@ -331,77 +374,89 @@ const list = async (req) => {
         model: Victima,
         as: "Victima",
         attributes: ["codigoVictima", "nombreVictima"],
-        required: true,
+        required: true
+      },
+      {
+        model: Usuario,
+        as: "Responsable",
+        attributes: ["usuarioId", "usuario"],
+        required: true
+      },
+      {
+        model: Usuario,
+        as: "Usuario",
+        attributes: ["usuarioId", "usuario"],
+        required: true
       },
       {
         model: Osamenta,
         as: "Osamenta",
         attributes: ["casoId", "fosaDet", "osamentaDet"],
-        required: true,
+        required: true
       },
       {
         model: BaseInfo,
         as: "BaseInfo",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
 
       {
         model: ProgramaIdent,
         as: "ProgramaIdent",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: EstadoCoincidencia,
         as: "EstadoCoincidencia",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: EstadoInvestigacion,
         as: "EstadoInvestigacion",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: CromosomaY,
         as: "CromosomaY",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: TipoContexto,
         as: "TipoContexto",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: TipoCasoDid,
         as: "TipoCasoDid",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: CalidadPerfil,
         as: "CalidadPerfil",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: Estado,
         as: "Estado",
         attributes: {
-          exclude: ["fechaHoraIngreso"],
-        },
+          exclude: ["fechaHoraIngreso"]
+        }
       },
       {
         model: DonanteCoincidencia,
@@ -411,14 +466,14 @@ const list = async (req) => {
           {
             model: Donante,
             as: "Donante",
-            attributes: ["descripcion"],
-          },
+            attributes: ["descripcion"]
+          }
         ],
-        required: false,
-      },
+        required: false
+      }
     ],
     required: true,
-    order: [["coincidenciaId", "DESC"]],
+    order: [["coincidenciaId", "DESC"]]
   }));
 };
 
@@ -428,14 +483,14 @@ const listDonante = async (req) => {
       {
         model: Donante,
         as: "Donante",
-        attributes: ["descripcion"],
+        attributes: ["descripcion"]
       },
       {
         model: Estado,
         as: "Estado",
         attributes: {
-          exclude: ["fechaHoraIngreso"],
-        },
+          exclude: ["fechaHoraIngreso"]
+        }
       },
       {
         model: Usuario,
@@ -447,15 +502,15 @@ const listDonante = async (req) => {
             "password",
             "personaId",
             "email",
-            "firmaUsuario",
-          ],
-        },
-      },
+            "firmaUsuario"
+          ]
+        }
+      }
     ],
     where: {
       coincidenciaId: req.body.coincidenciaId,
-      estadoId: 1,
-    },
+      estadoId: 1
+    }
   }));
 };
 
@@ -466,8 +521,8 @@ const listNotaLab = async (req) => {
         model: Estado,
         as: "Estado",
         attributes: {
-          exclude: ["fechaHoraIngreso"],
-        },
+          exclude: ["fechaHoraIngreso"]
+        }
       },
       {
         model: Usuario,
@@ -479,15 +534,15 @@ const listNotaLab = async (req) => {
             "password",
             "personaId",
             "email",
-            "firmaUsuario",
-          ],
-        },
-      },
+            "firmaUsuario"
+          ]
+        }
+      }
     ],
     where: {
       coincidenciaId: req.params.coincidenciaId,
-      estadoId: 1,
-    },
+      estadoId: 1
+    }
   }));
 };
 
@@ -498,8 +553,8 @@ const listAnotacion = async (req) => {
         model: Estado,
         as: "Estado",
         attributes: {
-          exclude: ["fechaHoraIngreso"],
-        },
+          exclude: ["fechaHoraIngreso"]
+        }
       },
       {
         model: Usuario,
@@ -511,15 +566,15 @@ const listAnotacion = async (req) => {
             "password",
             "personaId",
             "email",
-            "firmaUsuario",
-          ],
-        },
-      },
+            "firmaUsuario"
+          ]
+        }
+      }
     ],
     where: {
       coincidenciaId: req.params.coincidenciaId,
-      estadoId: 1,
-    },
+      estadoId: 1
+    }
   }));
 };
 
@@ -530,8 +585,8 @@ const listSolicitud = async (req) => {
         model: Estado,
         as: "Estado",
         attributes: {
-          exclude: ["fechaHoraIngreso"],
-        },
+          exclude: ["fechaHoraIngreso"]
+        }
       },
       {
         model: Usuario,
@@ -543,15 +598,15 @@ const listSolicitud = async (req) => {
             "password",
             "personaId",
             "email",
-            "firmaUsuario",
-          ],
-        },
-      },
+            "firmaUsuario"
+          ]
+        }
+      }
     ],
     where: {
       coincidenciaId: req.params.coincidenciaId,
-      estadoId: 1,
-    },
+      estadoId: 1
+    }
   }));
 };
 
@@ -566,20 +621,20 @@ const listArchivo = async (req) => {
             model: RepoDoc,
             as: "RepoDoc",
             attributes: {
-              exclude: ["fechaHoraIngreso"],
-            },
-          },
+              exclude: ["fechaHoraIngreso"]
+            }
+          }
         ],
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: Estado,
         as: "Estado",
         attributes: {
-          exclude: ["fechaHoraIngreso"],
-        },
+          exclude: ["fechaHoraIngreso"]
+        }
       },
       {
         model: Usuario,
@@ -591,15 +646,15 @@ const listArchivo = async (req) => {
             "password",
             "personaId",
             "email",
-            "firmaUsuario",
-          ],
-        },
-      },
+            "firmaUsuario"
+          ]
+        }
+      }
     ],
     where: {
       coincidenciaId: req.params.coincidenciaId,
-      estadoId: 1,
-    },
+      estadoId: 1
+    }
   }));
 };
 
@@ -608,11 +663,11 @@ const searchById = async (req) => {
     include: [
       {
         model: Osamenta,
-        as: "Osamenta",
+        as: "Osamenta"
       },
       {
         model: Victima,
-        as: "Victima",
+        as: "Victima"
       },
       {
         model: DonanteCoincidencia,
@@ -622,83 +677,83 @@ const searchById = async (req) => {
           {
             model: Donante,
             as: "Donante",
-            attributes: ["descripcion"],
-          },
+            attributes: ["descripcion"]
+          }
         ],
-        required: false,
+        required: false
       },
       {
         model: BaseInfo,
         as: "BaseInfo",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: ProgramaIdent,
         as: "ProgramaIdent",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: EstadoCoincidencia,
         as: "EstadoCoincidencia",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: EstadoInvestigacion,
         as: "EstadoInvestigacion",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: CromosomaY,
         as: "CromosomaY",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: TipoContexto,
         as: "TipoContexto",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: TipoCasoDid,
         as: "TipoCasoDid",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: CalidadPerfil,
         as: "CalidadPerfil",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: Estado,
         as: "Estado",
         attributes: {
-          exclude: ["fechaHoraIngreso"],
-        },
+          exclude: ["fechaHoraIngreso"]
+        }
       },
       {
         model: Usuario,
         as: "Usuario",
-        attributes: ["usuarioId", "usuario"],
-      },
+        attributes: ["usuarioId", "usuario"]
+      }
     ],
     where: {
-      coincidenciaId: req.params.coincidenciaId,
-    },
+      coincidenciaId: req.params.coincidenciaId
+    }
   });
   if (!coincidencia) {
     throw error("No existe la Coincidencia", 400);
@@ -722,54 +777,54 @@ const getDataFio = async (req) => {
             include: [
               {
                 model: Persona,
-                as: "Persona",
+                as: "Persona"
               },
               {
                 model: Puesto,
                 as: "Puesto",
-                attributes: ["descripcion"],
-              },
-            ],
-          },
-        ],
+                attributes: ["descripcion"]
+              }
+            ]
+          }
+        ]
       },
       {
         model: Genero,
-        as: "Genero",
+        as: "Genero"
       },
       {
         model: SexoAdn,
-        as: "SexoAdn",
+        as: "SexoAdn"
       },
       {
         model: TraumaCirc,
-        as: "TraumaCircAM",
+        as: "TraumaCircAM"
       },
       {
         model: TraumaCirc,
-        as: "TraumaCircPM",
+        as: "TraumaCircPM"
       },
       {
         model: CausaMuerte,
-        as: "CausaMuerteAM",
+        as: "CausaMuerteAM"
       },
       {
         model: CausaMuerte,
-        as: "CausaMuertePM",
+        as: "CausaMuertePM"
       },
       {
         model: GrupoEtnolinguistico,
-        as: "GrupoEtnolinguistico",
+        as: "GrupoEtnolinguistico"
       },
       {
         model: Estado,
         as: "Estado",
         attributes: {
-          exclude: ["fechaHoraIngreso"],
-        },
-      },
+          exclude: ["fechaHoraIngreso"]
+        }
+      }
     ],
-    where: {coincidenciaId: req.params.coincidenciaId},
+    where: {coincidenciaId: req.params.coincidenciaId}
   });
   if (!fio) {
     throw error("La coincidencia no contiene Fio", 400);
@@ -782,11 +837,11 @@ const getDataReporte = async (req) => {
     include: [
       {
         model: Osamenta,
-        as: "Osamenta",
+        as: "Osamenta"
       },
       {
         model: Victima,
-        as: "Victima",
+        as: "Victima"
       },
       {
         model: DonanteCoincidencia,
@@ -796,73 +851,73 @@ const getDataReporte = async (req) => {
           {
             model: Donante,
             as: "Donante",
-            attributes: ["descripcion"],
-          },
+            attributes: ["descripcion"]
+          }
         ],
-        required: false,
+        required: false
       },
       {
         model: BaseInfo,
         as: "BaseInfo",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: ProgramaIdent,
         as: "ProgramaIdent",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: EstadoCoincidencia,
         as: "EstadoCoincidencia",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: EstadoInvestigacion,
         as: "EstadoInvestigacion",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: CromosomaY,
         as: "CromosomaY",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: TipoContexto,
         as: "TipoContexto",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: TipoCasoDid,
         as: "TipoCasoDid",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: CalidadPerfil,
         as: "CalidadPerfil",
         attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
+          exclude: ["estadoId", "fechaHoraIngreso"]
+        }
       },
       {
         model: Estado,
         as: "Estado",
         attributes: {
-          exclude: ["fechaHoraIngreso"],
-        },
+          exclude: ["fechaHoraIngreso"]
+        }
       },
       {
         model: Usuario,
@@ -872,14 +927,14 @@ const getDataReporte = async (req) => {
           {
             model: Puesto,
             as: "Puesto",
-            attributes: ["descripcion"],
-          },
-        ],
-      },
+            attributes: ["descripcion"]
+          }
+        ]
+      }
     ],
     where: {
-      coincidenciaId: req.params.coincidenciaId,
-    },
+      coincidenciaId: req.params.coincidenciaId
+    }
   });
   if (!coincidencia) {
     throw error("No existe la Coincidencia", 400);
@@ -1025,7 +1080,7 @@ const getReporte = async (req) => {
   var data = {
     AcceptRanges: "bytes",
     ContentType: "application/pdf",
-    Body: stream,
+    Body: stream
   };
 
   return data;
@@ -1033,7 +1088,7 @@ const getReporte = async (req) => {
 
 const getFioPDF = async (req) => {
   var fio = await getDataFio(req);
-  
+
   var grupoEt, genero, sexo, traumaAm, traumaPM, cauMueAM, cauMuePM;
   if (!fio.GrupoEtnolinguistico) {
     grupoEt = "null";
@@ -1073,6 +1128,7 @@ const getFioPDF = async (req) => {
     cauMuePM = fio.CausaMuertePM.descripcion;
   }
 
+  console.log(fio.Coincidencia.Usuario);
   var htmlFirma = `<img src="data:image/jpg;base64,${fio.Coincidencia.Usuario.firmaUsuario.toString(
     "base64"
   )}" width="200" height="160">`;
@@ -1082,7 +1138,7 @@ const getFioPDF = async (req) => {
     __dirname,
     "../../PlantillasHtml/Coincidencia/ReporteFio.html"
   );
-
+  console.log("paso aca");
   htmlFio = getFileFromPath(pathA);
   htmlFio = htmlFio.replace("@nombrevictima", fio.nombreVictima);
   htmlFio = htmlFio.replace("@AM", fio.codigoAM);
@@ -1158,7 +1214,7 @@ const getFioPDF = async (req) => {
   var data = {
     AcceptRanges: "bytes",
     ContentType: "application/pdf",
-    Body: stream,
+    Body: stream
   };
 
   return data;
@@ -1166,7 +1222,7 @@ const getFioPDF = async (req) => {
 
 const change = async (req) => {
   const coincidenciaUpdate = await Coincidencia.findOne({
-    where: {coincidenciaId: req.params.coincidenciaId},
+    where: {coincidenciaId: req.params.coincidenciaId}
   });
 
   if (!coincidenciaUpdate) {
@@ -1174,8 +1230,8 @@ const change = async (req) => {
   }
   const result = await Coincidencia.update(req.body, {
     where: {
-      coincidenciaId: req.params.coincidenciaId,
-    },
+      coincidenciaId: req.params.coincidenciaId
+    }
   });
   if (result > 0) {
     return "Cambio realizado con exito";
@@ -1186,15 +1242,15 @@ const change = async (req) => {
 
 const changeFio = async (req) => {
   const donanteUpdate = await Fio.findOne({
-    where: {coincidenciaId: req.params.coincidenciaId},
+    where: {coincidenciaId: req.params.coincidenciaId}
   });
   if (!donanteUpdate) {
     throw error("No Existe Fio para esta coincidencia", 400);
   }
   const result = await Fio.update(req.body, {
     where: {
-      coincidenciaId: req.params.coincidenciaId,
-    },
+      coincidenciaId: req.params.coincidenciaId
+    }
   });
   if (result > 0) {
     return "Fio guardado con exito";
@@ -1205,15 +1261,15 @@ const changeFio = async (req) => {
 
 const changeDonante = async (req) => {
   const donanteUpdate = await DonanteCoincidencia.findOne({
-    where: {donanteCoincidenciaId: req.params.donanteCoincidenciaId},
+    where: {donanteCoincidenciaId: req.params.donanteCoincidenciaId}
   });
   if (!donanteUpdate) {
     throw error("No existe el donante", 400);
   }
   const result = await DonanteCoincidencia.update(req.body, {
     where: {
-      donanteCoincidenciaId: req.params.donanteCoincidenciaId,
-    },
+      donanteCoincidenciaId: req.params.donanteCoincidenciaId
+    }
   });
   if (result > 0) {
     return "Cambio realizado con exito";
@@ -1224,15 +1280,15 @@ const changeDonante = async (req) => {
 
 const changeNotaLab = async (req) => {
   const notaLabUpdate = await NotaLabGenetica.findOne({
-    where: {notaLabGeneticaId: req.params.notaLabGeneticaId},
+    where: {notaLabGeneticaId: req.params.notaLabGeneticaId}
   });
   if (!notaLabUpdate) {
     throw error("No existe la nota del laboratorio", 400);
   }
   const result = await NotaLabGenetica.update(req.body, {
     where: {
-      notaLabGeneticaId: req.params.notaLabGeneticaId,
-    },
+      notaLabGeneticaId: req.params.notaLabGeneticaId
+    }
   });
   if (result > 0) {
     return "Cambio realizado con exito";
@@ -1243,15 +1299,15 @@ const changeNotaLab = async (req) => {
 
 const changeAnotacion = async (req) => {
   const anotacionUpdate = await AnotacionCoincidencia.findOne({
-    where: {anotacionCoincidenciaId: req.params.anotacionCoincidenciaId},
+    where: {anotacionCoincidenciaId: req.params.anotacionCoincidenciaId}
   });
   if (!anotacionUpdate) {
     throw error("No existe la anotacion", 400);
   }
   const result = await AnotacionCoincidencia.update(req.body, {
     where: {
-      anotacionCoincidenciaId: req.params.anotacionCoincidenciaId,
-    },
+      anotacionCoincidenciaId: req.params.anotacionCoincidenciaId
+    }
   });
   if (result > 0) {
     return "Cambio realizado con exito";
@@ -1262,15 +1318,15 @@ const changeAnotacion = async (req) => {
 
 const changeSolicitud = async (req) => {
   const solicitudUpdate = await SolicitudSeguimiento.findOne({
-    where: {solicitudSeguimientoId: req.params.solicitudSeguimientoId},
+    where: {solicitudSeguimientoId: req.params.solicitudSeguimientoId}
   });
   if (!solicitudUpdate) {
     throw error("No existe la solicitud de seguimiento", 400);
   }
   const result = await SolicitudSeguimiento.update(req.body, {
     where: {
-      solicitudSeguimientoId: req.params.solicitudSeguimientoId,
-    },
+      solicitudSeguimientoId: req.params.solicitudSeguimientoId
+    }
   });
   if (result > 0) {
     return "Cambio realizado con exito";
@@ -1305,4 +1361,5 @@ module.exports = {
   changeSolicitud,
   changeFio,
   deleteArchivo,
+  listResponsables
 };

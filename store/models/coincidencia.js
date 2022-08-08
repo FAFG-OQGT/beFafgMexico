@@ -130,6 +130,14 @@ module.exports = (sequelize, type) => {
           key: "usuarioId",
         },
       },
+      responsableId: {
+        type: type.INTEGER(8),
+        allowNull: false,
+        references: {
+          model: "usuario",
+          key: "usuarioId",
+        },
+      },
     },
     {
       timestamps: false,

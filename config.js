@@ -1,14 +1,14 @@
 module.exports = {
   api: {
-    port: process.env.API_PORT || 3100,
+    port: process.env.API_PORT || 3100
   },
   jwt: {
     secret:
       process.env.JWT_SECRET ||
-      "f1d6894d4c79347d8dc6370d59b700fc1afea9c18a2bab99284d409affee07b4",
+      "f1d6894d4c79347d8dc6370d59b700fc1afea9c18a2bab99284d409affee07b4"
   },
   mysql: {
-    database: "dbTestMexico",
+    database: "dbMexicopreprodu",
     username: "admin",
     password: "OQSolutionsTest",
     host: "oqdbtest.com7uudac4ow.us-east-2.rds.amazonaws.com",
@@ -17,22 +17,34 @@ module.exports = {
       max: 5,
       min: 0,
       acquire: 30000,
-      idle: 10000,
-    },
+      idle: 10000
+    }
+  },
+  resetPass: {
+    emisor: "oqsolutionsgt@gmail.com",
+    nombreEmpresa: "CRIH Mexico",
+    direccionEmpresa: "MEXICO",
+
+    urlLogoEmpresa:
+      "https://fafg.org/wp-content/themes/yootheme/cache/logo-fafg-full-88314a02-0a86aa52.png",
+    urlImgFooter: "https://did.fafg.org/imagePassword.jpg",
+    urlWebResetPassWord: "https://did.fafg.org/auth/update-password/",
+    minutosVigenciaEnlace: 10,
+    emailDefault: "oqsolutionsgt@gmail.com"
   },
   correos: {
-    creacionCoincidencia: 'oqsolutionsgt@gmail.com',
-    creacionSolicitudSeguimiento: 'oqsolutionsgt@gmail.com',
-    default: 'oqsolutionsgt@gmail.com',
+    creacionCoincidencia: "bertoni.giron@fafg.org",
+    creacionSolicitudSeguimiento:
+      "bertoni.giron@fafg.org;marco.garcia@fafg.org;",
+    default: "bertoni.giron@fafg.org"
   },
-  optionsHtmlPdf : {
-    
+  optionsHtmlPdf: {
     //port:9222
   },
-  s3Params :  {
-    accessKeyId: "AKIAYKVW644AWZL5WJHVabc",
-    secretAccessKey: "SgTKjssXlXXltT89zKEHrDqqFYxkN77cV/P2DQTZdef",
-    Bucket: "oqsolutionstest",
-    Region: "us-east-1",
+  s3Params: {
+    accessKeyId: "AKIA3ZGPLHEWJNJKJBMW",
+    secretAccessKey: "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",
+    Bucket: "crihproducoahuila",
+    Region: "us-east-1"
   }
 };

@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 var sequelize = require("sequelize");
 const auth = require("../../../auth");
 const joi = require("joi");
-const moment = require('moment');
+const moment = require("moment");
 const error = require("../../../utils/error");
 const {
   Usuario,
@@ -13,9 +13,9 @@ const {
   ObjetoAcceso,
   Modulo,
   Rol,
-  Token,
+  Token
 } = require("../../../store/mysql");
-const { schemaLogin } = require("../../../auth/schemas");
+const {schemaLogin} = require("../../../auth/schemas");
 const usuario = require("../../../store/models/usuario");
 const email = require("../mail/controller");
 
@@ -242,9 +242,9 @@ const cadenaCorreo = async (pTipo, pToken) => {
   return htmlToken;
 };
 
-const generateToken = async () =>{
+const generateToken = async () => {
   return Math.floor(100000 + Math.random() * 900000);
-}
+};
 
 const moduloUser = async (usuarioIdP) => {
   console.log("entre");
@@ -256,19 +256,18 @@ const moduloUser = async (usuarioIdP) => {
         as: "modulo",
         attributes: ["moduloId"],
         where: {
-          aplicativoId: 1,
+          aplicativoId: 1
         }
-      },
+      }
     ],
     where: {
       usuarioId: usuarioIdP,
-      estadoId: 1,
-     
-    },
+      estadoId: 1
+    }
   }));
 };
 
-const items = async (usuarioId) => {
+const itemsMenu = async (usuarioId) => {
   const rolesUser = await UsuarioRol.findAll({
     include: [
       {
@@ -276,11 +275,11 @@ const items = async (usuarioId) => {
         as: "modulo",
         attributes: ["moduloId"],
         where: {
-          aplicativoId: 1,
+          aplicativoId: 1
         }
-      },
+      }
     ],
-    where: { usuarioId: usuarioId },
+    where: {usuarioId: usuarioId}
   });
 
   let listRolesUsuario = new Array();
@@ -289,7 +288,7 @@ const items = async (usuarioId) => {
   });
 
   const rol_objetoAcceso = await RolObjetoAcceso.findAll({
-    where: { rolId: listRolesUsuario, estadoId: 1 },
+    where: {rolId: listRolesUsuario, estadoId: 1}
   });
 
   let listObjetoAccesoId = new Array();
@@ -298,7 +297,7 @@ const items = async (usuarioId) => {
   });
 
   const objeto_acceso = await ObjetoAcceso.findAll({
-    where: { objetoAccesoId: listObjetoAccesoId },
+    where: {objetoAccesoId: listObjetoAccesoId}
   });
 
   let listObjetoMenu = new Array();
@@ -309,13 +308,13 @@ const items = async (usuarioId) => {
     listAcceso.push(data.accesoId);
     let acceso = {
       objetoId: data.objetoId,
-      accesoId: data.accesoId,
+      accesoId: data.accesoId
     };
     accesosxMenu.push(acceso);
   });
 
   const objetoMenu = await ObjetoMenu.findAll({
-    where: { objetoId: listObjetoMenu },
+    where: {objetoId: listObjetoMenu}
   });
 
   let agregados = new Array();
@@ -326,40 +325,143 @@ const items = async (usuarioId) => {
     let ver = false;
     let agregar = false;
     let eliminar = false;
+    let verArchivo = false;
     let agregarArchivo = false;
+    let eliminarArchivo = false;
+    let descargarArchivo = false;
+    let verAnotaciones = false;
+    let agregarAnotaciones = false;
+    let verSeguimientoSolicitud = false;
+    let agregarSeguimientoSolicitud = false;
+    let verNotasLaboratorio = false;
+    let agregarNotasLaboratorio = false;
+    let verFio = false;
+    let editarFio = false;
+    let verDonantes = false;
+    let editarDonantes = false;
 
     if (
       accesosxMenu.find((it) => it.objetoId === objetoId && it.accesoId === 1)
     ) {
-      actualizar = true;
+      ver = true;
     }
     if (
       accesosxMenu.find((it) => it.objetoId === objetoId && it.accesoId === 2)
     ) {
-      ver = true;
+      agregar = true;
     }
 
     if (
       accesosxMenu.find((it) => it.objetoId === objetoId && it.accesoId === 3)
     ) {
-      agregar = true;
+      actualizar = true;
     }
     if (
       accesosxMenu.find((it) => it.objetoId === objetoId && it.accesoId === 4)
     ) {
       eliminar = true;
     }
+
     if (
       accesosxMenu.find((it) => it.objetoId === objetoId && it.accesoId === 5)
     ) {
+      verArchivo = true;
+    }
+
+    if (
+      accesosxMenu.find((it) => it.objetoId === objetoId && it.accesoId === 6)
+    ) {
       agregarArchivo = true;
+    }
+    if (
+      accesosxMenu.find((it) => it.objetoId === objetoId && it.accesoId === 7)
+    ) {
+      eliminarArchivo = true;
+    }
+    if (
+      accesosxMenu.find((it) => it.objetoId === objetoId && it.accesoId === 8)
+    ) {
+      descargarArchivo = true;
+    }
+
+    if (
+      accesosxMenu.find((it) => it.objetoId === objetoId && it.accesoId === 9)
+    ) {
+      verAnotaciones = true;
+    }
+
+    if (
+      accesosxMenu.find((it) => it.objetoId === objetoId && it.accesoId === 10)
+    ) {
+      agregarAnotaciones = true;
+    }
+
+    if (
+      accesosxMenu.find((it) => it.objetoId === objetoId && it.accesoId === 11)
+    ) {
+      verSeguimientoSolicitud = true;
+    }
+
+    if (
+      accesosxMenu.find((it) => it.objetoId === objetoId && it.accesoId === 12)
+    ) {
+      agregarSeguimientoSolicitud = true;
+    }
+
+    if (
+      accesosxMenu.find((it) => it.objetoId === objetoId && it.accesoId === 13)
+    ) {
+      verNotasLaboratorio = true;
+    }
+
+    if (
+      accesosxMenu.find((it) => it.objetoId === objetoId && it.accesoId === 14)
+    ) {
+      agregarNotasLaboratorio = true;
+    }
+
+    if (
+      accesosxMenu.find((it) => it.objetoId === objetoId && it.accesoId === 15)
+    ) {
+      verFio = true;
+    }
+
+    if (
+      accesosxMenu.find((it) => it.objetoId === objetoId && it.accesoId === 16)
+    ) {
+      editarFio = true;
+    }
+
+    if (
+      accesosxMenu.find((it) => it.objetoId === objetoId && it.accesoId === 17)
+    ) {
+      verDonantes = true;
+    }
+
+    if (
+      accesosxMenu.find((it) => it.objetoId === objetoId && it.accesoId === 18)
+    ) {
+      editarDonantes = true;
     }
     let permisos = {
       actualizar,
       ver,
       agregar,
       eliminar,
+      verArchivo,
       agregarArchivo,
+      eliminarArchivo,
+      descargarArchivo,
+      verAnotaciones,
+      agregarAnotaciones,
+      verSeguimientoSolicitud,
+      agregarSeguimientoSolicitud,
+      verNotasLaboratorio,
+      agregarNotasLaboratorio,
+      verFio,
+      editarFio,
+      verDonantes,
+      editarDonantes
     };
 
     return permisos;
@@ -378,7 +480,7 @@ const items = async (usuarioId) => {
           url: data.url,
           classes: "",
           icon: data.icon,
-          accesos: obtenerAcceso(menuId),
+          accesos: obtenerAcceso(menuId)
         };
         agregados.push(menuId);
         childens.push(itemMenu);
@@ -399,7 +501,7 @@ const items = async (usuarioId) => {
         classes: data.dataValues.classes,
         icon: data.dataValues.icon,
         children: objetoAnidado(data.dataValues.objetoId),
-        accesos: obtenerAcceso(data.dataValues.objetoId),
+        accesos: obtenerAcceso(data.dataValues.objetoId)
       });
     });
 
@@ -415,14 +517,14 @@ const items = async (usuarioId) => {
         classes: data.dataValues.classes,
         icon: data.dataValues.icon,
         children: objetoAnidado(data.dataValues.objetoId),
-        accesos: obtenerAcceso(data.objetoId),
+        accesos: obtenerAcceso(data.objetoId)
       });
     }
   });
   return miMenu;
 };
 
-const logToken = async(req) => {
+const logToken = async (req) => {
   const result = joi.validate(req.body, schemaLogin);
   if (result.error) {
     throw error("Formato no valido");
@@ -433,100 +535,121 @@ const logToken = async(req) => {
       {
         model: Usuario,
         as: "Usuario",
-        attributes: ["usuarioId","personaId", "usuario", "password", "email"],
+        attributes: ["usuarioId", "personaId", "usuario", "password", "email"]
       },
       {
         model: Rol,
         as: "modulo",
-        attributes: ["rolId", "descripcion", "moduloId", "aplicativoId"],
-      },
+        attributes: ["rolId", "descripcion", "moduloId", "aplicativoId"]
+      }
     ],
     where: sequelize.literal(
-      `Usuario.usuario = '${req.body.usuario}' `+
-      `AND Usuario.estadoId = 1 ` +
-      `AND modulo.aplicativoId = 1 `
+      `Usuario.usuario = '${req.body.usuario}' ` +
+        `AND Usuario.estadoId = 1 ` +
+        `AND modulo.aplicativoId = 1 `
     )
-    
   }).then(async (userRes) => {
     if (!userRes) {
       throw error("Usuario no existe o esta inactivo", 401);
     }
     console.log(userRes);
-    const pwdComp = bcrypt.compareSync(req.body.password, userRes.Usuario.password);
+    const pwdComp = bcrypt.compareSync(
+      req.body.password,
+      userRes.Usuario.password
+    );
     if (pwdComp) {
       const personas = await Persona.findOne({
-        where: { personaId: userRes.Usuario.personaId },
+        where: {personaId: userRes.Usuario.personaId}
       });
       const token = await generateToken();
-      const cuerpo = await cadenaCorreo("INGRESO SISTEMA DID - CRIH COAHUILA", token);
+      const cuerpo = await cadenaCorreo(
+        "INGRESO SISTEMA DID - CRIH COAHUILA",
+        token
+      );
       const valores = {
-        operacion: 'LOGIN',
+        operacion: "LOGIN",
         valorToken: token,
         estadoId: 1,
-        usuarioIngresoId : userRes.Usuario.usuarioId,
-        
-      }
+        usuarioIngresoId: userRes.Usuario.usuarioId
+      };
       const tokenIns = Token.create(valores);
-      email.sendMail(userRes.Usuario.email, "INGRESO SISTEMA DID - CRIH COAHUILA", null, cuerpo);
+      email.sendMail(
+        userRes.Usuario.email,
+        "INGRESO SISTEMA DID - CRIH COAHUILA",
+        null,
+        cuerpo
+      );
       return "Se ha enviado un token a su correo electronico";
     } else {
       throw error("Contraseña invalida");
     }
   }));
-}
+};
 
 const login = async (req) => {
-  
-  
-
   return (user = await UsuarioRol.findOne({
     include: [
       {
         model: Usuario,
         as: "Usuario",
-        attributes: ["usuarioId","personaId", "usuario", "password", "email"],
+        attributes: ["usuarioId", "personaId", "usuario", "password", "email"]
       },
       {
         model: Rol,
         as: "modulo",
-        attributes: ["rolId", "descripcion", "moduloId", "aplicativoId"],
-      },
+        attributes: ["rolId", "descripcion", "moduloId", "aplicativoId"]
+      }
     ],
     where: sequelize.literal(
-      `Usuario.usuario = '${req.body.usuario}' `+
-      `AND Usuario.estadoId = 1 ` +
-      `AND modulo.aplicativoId = 1 `
+      `Usuario.usuario = '${req.body.usuario}' ` +
+        `AND Usuario.estadoId = 1 ` +
+        `AND modulo.aplicativoId = 1 `
     )
-    
   }).then(async (userRes) => {
     if (!userRes) {
       throw error("Usuario no existe o esta inactivo", 401);
     }
 
     const valida = await Token.findOne({
-      where: { valorToken: req.body.token, estadoId: 1, usuarioIngresoId : userRes.Usuario.usuarioId},
+      where: {
+        valorToken: req.body.token,
+        estadoId: 1,
+        usuarioIngresoId: userRes.Usuario.usuarioId
+      }
     });
     var CurrentDate = moment();
-    console.log(CurrentDate)
+    console.log(CurrentDate);
     if (!valida) {
       throw error("Token Ingresado no valido", 400);
     }
 
-      const personas = await Persona.findOne({
-        where: { personaId: userRes.Usuario.personaId },
-      });
-      const item = await items(userRes.Usuario.usuarioId);
-      const modulo = await moduloUser(1);
-      const data = {
-        usuario: userRes.Usuario.usuario,
-        usuarioId: userRes.Usuario.usuarioId,
-        nombre: personas.nombre1 + " " + personas.apellido1,
-        rol: modulo,
-        token: auth.sign(userRes.Usuario.usuarioId),
-        items: item,
-      };
-      return data;
-    
+    const personas = await Persona.findOne({
+      where: {personaId: userRes.Usuario.personaId}
+    });
+    let menuResponse = [
+      {
+        id: "support",
+        title: "Navigation",
+        type: "group",
+        icon: "icon-support",
+        children: await itemsMenu(userRes.Usuario.usuarioId)
+      }
+    ];
+    const menu = menuResponse;
+
+    const modulo = await moduloUser(userRes.Usuario.usuarioId);
+    const data = {
+      usuario: userRes.Usuario.usuario,
+      usuarioId: userRes.Usuario.usuarioId,
+      nombre: personas.nombre1 + " " + personas.apellido1,
+      rol: modulo,
+      token: auth.sign(userRes.Usuario.usuarioId),
+      items: menu
+    };
+    return {
+      code: 1,
+      data
+    };
   }));
 };
 
@@ -540,8 +663,8 @@ const changePass = async (req) => {
   return (user = await Usuario.findOne({
     where: {
       usuarioId: req.body.usuarioId,
-      estadoId: 1,
-    },
+      estadoId: 1
+    }
   }).then(async (userRes) => {
     if (!userRes) {
       throw error("Usuario no existe o esta inactivo", 401);
@@ -553,12 +676,12 @@ const changePass = async (req) => {
 
     return (updatePass = await Usuario.update(
       {
-        password: bcrypt.hashSync(req.body.passNew, 7),
+        password: bcrypt.hashSync(req.body.passNew, 7)
       },
       {
         where: {
-          usuarioId: req.body.usuarioId,
-        },
+          usuarioId: req.body.usuarioId
+        }
       }
     ).then((result) => {
       if (!result) {
@@ -574,25 +697,25 @@ const changePass = async (req) => {
 };
 
 const changePassAdmin = async (req) => {
-      return (updatePass = await Usuario.update(
-      {
-        password: bcrypt.hashSync(req.body.passNew, 7),
-      },
-      {
-        where: {
-          usuarioId: req.body.usuarioId,
-        },
+  return (updatePass = await Usuario.update(
+    {
+      password: bcrypt.hashSync(req.body.passNew, 7)
+    },
+    {
+      where: {
+        usuarioId: req.body.usuarioId
       }
-    ).then((result) => {
-      if (!result) {
-        throw error("Error al actualizar contraseña", 401);
-      }
-      if (result > 0) {
-        return "Contraseña actualizada con exito";
-      } else {
-        return "No se actualizo la contraseña";
-      }
-    }));
+    }
+  ).then((result) => {
+    if (!result) {
+      throw error("Error al actualizar contraseña", 401);
+    }
+    if (result > 0) {
+      return "Contraseña actualizada con exito";
+    } else {
+      return "No se actualizo la contraseña";
+    }
+  }));
 };
 
 module.exports = {
