@@ -247,7 +247,6 @@ const generateToken = async () => {
 };
 
 const moduloUser = async (usuarioIdP) => {
-  console.log("entre");
   return (modulos = await UsuarioRol.findAll({
     attributes: ["rolId"],
     include: [
@@ -552,7 +551,6 @@ const logToken = async (req) => {
     if (!userRes) {
       throw error("Usuario no existe o esta inactivo", 401);
     }
-    console.log(userRes);
     const pwdComp = bcrypt.compareSync(
       req.body.password,
       userRes.Usuario.password
@@ -618,7 +616,6 @@ const login = async (req) => {
       }
     });
     var CurrentDate = moment();
-    console.log(CurrentDate);
     if (!valida) {
       throw error("Token Ingresado no valido", 400);
     }

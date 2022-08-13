@@ -335,7 +335,6 @@ const itemsMenu = async (usuarioId) => {
 };
 
 const itemAccesoXRol = async (rolId, objetoId) => {
-  console.log(rolId, objetoId);
   let listRolesUsuario = new Array();
   listRolesUsuario.push(rolId);
 
@@ -599,7 +598,6 @@ const listPermisos = async (req) => {
 };
 
 const changeRol = async (req) => {
-  console.log(1, req.body.rolId, req.params.usuarioId);
   let usuarioId = req.params.usuarioId;
   let rolId = req.body.rolId;
   //valida que el usuario exista
@@ -614,7 +612,6 @@ const changeRol = async (req) => {
   const roltoUpdate = await Rol.findOne({
     where: {rolId: rolId, estadoId: 1}
   });
-  console.log(2, roltoUpdate);
 
   if (!roltoUpdate) {
     throw error("Rol no existe o esta inactivo", 400);
@@ -658,13 +655,11 @@ const changeRol = async (req) => {
 const insert = async (req) => {
   req.body.password = bcrypt.hashSync(req.body.password, 7);
   usuario = await Usuario.create(req.body);
-  console.log(usuario);
   rol = {
     usuarioId: usuario.usuarioId,
     rolId: req.body.rolId,
     estadoId: 1
   };
-  console.log(rol);
 
   rolUsuario = await UsuarioRol.create(rol);
 

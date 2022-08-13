@@ -1088,7 +1088,7 @@ const getReporte = async (req) => {
 
 const getFioPDF = async (req) => {
   var fio = await getDataFio(req);
-
+  console.log('aca  ')
   var grupoEt, genero, sexo, traumaAm, traumaPM, cauMueAM, cauMuePM;
   if (!fio.GrupoEtnolinguistico) {
     grupoEt = "null";
@@ -1127,8 +1127,7 @@ const getFioPDF = async (req) => {
   } else {
     cauMuePM = fio.CausaMuertePM.descripcion;
   }
-
-  console.log(fio.Coincidencia.Usuario);
+ 
   var htmlFirma = `<img src="data:image/jpg;base64,${fio.Coincidencia.Usuario.firmaUsuario.toString(
     "base64"
   )}" width="200" height="160">`;
