@@ -213,6 +213,11 @@ module.exports = (sequelize, type) => {
       traumaAntPM: {
         type: type.STRING(500),
       },
+      entregado: {
+        type: type.INTEGER(5),
+        allowNull: true,
+        defaultValue: null,
+      },
       estadoId: {
         type: type.INTEGER(5),
         allowNull: false,

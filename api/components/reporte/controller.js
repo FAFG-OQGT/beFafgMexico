@@ -37,8 +37,7 @@ const cat_sexo_adn = require("../../../store/models/cat_sexo_adn");
 const repIdentificadoSmih = async (req) => {
   const pagina = req.body.pagina ? parseInt(req.body.pagina) : 0;
   const limite = req.body.limite ? parseInt(req.body.limite) : 10;
-
-  return (identificados = await IdentificadoSmih.findAndCountAll({
+  var identificados = await IdentificadoSmih.findAndCountAll({
     offset: pagina * limite,
     limit: limite,
     include: [
@@ -134,7 +133,7 @@ const repIdentificadoSmih = async (req) => {
           {
             model: SexoAdn,
             as: "SexoAdn",
-            attributes: { exclude: ["estadoId", "fechaHoraIngreso"] },
+            attributes: {exclude: ["estadoId", "fechaHoraIngreso"]},
           },
         ],
         attributes: {
@@ -203,6 +202,7 @@ const repIdentificadoSmih = async (req) => {
             ` AND IFNULL(Victima.residenciaMuniId, -1) = IF(${req.body.residenciaMuniId} = -1,IFNULL(Victima.residenciaMuniId, -1),${req.body.residenciaMuniId})`
         ),
       },
+       
       {
         model: Genero,
         as: "Sexo",
@@ -305,6 +305,7 @@ const repIdentificadoSmih = async (req) => {
         ` AND IFNULL(identificado_smih.sexoId, -1) = IF(${req.body.sexoId} = -1,IFNULL(identificado_smih.sexoId, -1),${req.body.sexoId})` +
         ` AND IFNULL(identificado_smih.grupoEtarioId, -1) = IF(${req.body.grupoEtarioId} = -1,IFNULL(identificado_smih.grupoEtarioId, -1),${req.body.grupoEtarioId})` +
         ` AND IFNULL(identificado_smih.grupoEtnolinguisticoId, -1) = IF(${req.body.grupoEtnolinguisticoId} = -1,IFNULL(identificado_smih.grupoEtnolinguisticoId, -1),${req.body.grupoEtnolinguisticoId})` +
+        ` AND IFNULL(identificado_smih.entregado, -1) = IF(${req.body.entregado} = -1,IFNULL(identificado_smih.entregado, -1),${req.body.entregado})` +
         ` AND IFNULL(identificado_smih.tipoCasoDidId, -1) = IF(${req.body.tipoCasoDidId} = -1,IFNULL(identificado_smih.tipoCasoDidId, -1),${req.body.tipoCasoDidId})` +
         ` AND IFNULL(identificado_smih.edadAM, -1) >= IF(${req.body.edadAMIni} = -1,IFNULL(identificado_smih.edadAM, -1),${req.body.edadAMIni})` +
         ` AND IFNULL(identificado_smih.edadAM, -1) <= IF(${req.body.edadAMFin} = -1,IFNULL(identificado_smih.edadAM, -1),${req.body.edadAMFin})` +
@@ -343,7 +344,8 @@ const repIdentificadoSmih = async (req) => {
         ` AND IFNULL(identificado_smih.fechaReporteGenetica, '') <= IF(${req.body.fechaReporteGeneticaFin} is null,IFNULL(identificado_smih.fechaReporteGenetica, ''),${req.body.fechaReporteGeneticaFin})`
     ),
     order: [["identificadoSmihId", "ASC"]],
-  }));
+  });
+  return identificados;
 };
 
 const repIdentificadoOst = async (req) => {
@@ -375,7 +377,7 @@ const repIdentificadoOst = async (req) => {
           {
             model: SexoAdn,
             as: "SexoAdn",
-            attributes: { exclude: ["estadoId", "fechaHoraIngreso"] },
+            attributes: {exclude: ["estadoId", "fechaHoraIngreso"]},
           },
         ],
         attributes: {
@@ -395,7 +397,7 @@ const repIdentificadoOst = async (req) => {
       {
         model: Victima,
         as: "Victima",
-        include:[
+        include: [
           {
             model: Municipio,
             as: "MuniResidencia",
@@ -424,7 +426,7 @@ const repIdentificadoOst = async (req) => {
               exclude: ["estadoId", "fechaHoraIngreso", "paisId"],
             },
           },
-          
+
           {
             model: TipoDocumento,
             as: "TipoDocumento",
@@ -437,11 +439,11 @@ const repIdentificadoOst = async (req) => {
           exclude: ["estadoId", "fechaHoraIngreso"],
         },
         where: sequelize.literal(
-           `Victima.codigoVictima like IF('${req.body.codigoVictima}' = '',Victima.codigoVictima, '%${req.body.codigoVictima}%')` +
+          `Victima.codigoVictima like IF('${req.body.codigoVictima}' = '',Victima.codigoVictima, '%${req.body.codigoVictima}%')` +
             `AND Victima.nombreVictima like IF('${req.body.nombreVictima}' = '',Victima.nombreVictima, '%${req.body.nombreVictima}%')` +
             `AND IFNULL(Victima.residenciaAldea,'') like IF('${req.body.residenciaAldea}' = '',IFNULL(Victima.residenciaAldea,''), '%${req.body.residenciaAldea}%')` +
-             ` AND IFNULL(Victima.residenciaDeptoId, -1) = IF(${req.body.residenciaDeptoId} = -1,IFNULL(Victima.residenciaDeptoId, -1),${req.body.residenciaDeptoId})` +
-             ` AND IFNULL(Victima.residenciaMuniId, -1) = IF(${req.body.residenciaMuniId} = -1,IFNULL(Victima.residenciaMuniId, -1),${req.body.residenciaMuniId})`
+            ` AND IFNULL(Victima.residenciaDeptoId, -1) = IF(${req.body.residenciaDeptoId} = -1,IFNULL(Victima.residenciaDeptoId, -1),${req.body.residenciaDeptoId})` +
+            ` AND IFNULL(Victima.residenciaMuniId, -1) = IF(${req.body.residenciaMuniId} = -1,IFNULL(Victima.residenciaMuniId, -1),${req.body.residenciaMuniId})`
         ),
       },
       {
@@ -531,11 +533,10 @@ const repCoincidencia = async (req) => {
   const pagina = req.body.pagina ? parseInt(req.body.pagina) : 0;
   const limite = req.body.limite ? parseInt(req.body.limite) : 10;
 
-  console.log(req.body);
   const coincidencias = await Coincidencia.findAndCountAll({
     offset: pagina * limite,
     limit: limite,
-    distinct: 'coincidenciaId',
+    distinct: "coincidenciaId",
     include: [
       {
         model: Osamenta,
@@ -552,10 +553,10 @@ const repCoincidencia = async (req) => {
           },
           {
             model: Departamento,
-                as: "DeptoExhumacion",
-                attributes: {
-                  exclude: ["estadoId", "fechaHoraIngreso", "paisId"],
-                },
+            as: "DeptoExhumacion",
+            attributes: {
+              exclude: ["estadoId", "fechaHoraIngreso", "paisId"],
+            },
           },
         ],
         where: sequelize.literal(
@@ -568,7 +569,7 @@ const repCoincidencia = async (req) => {
       {
         model: Victima,
         as: "Victima",
-        
+
         attributes: {
           exclude: ["estadoId", "fechaHoraIngreso"],
         },
