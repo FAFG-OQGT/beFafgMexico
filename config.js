@@ -1,3 +1,4 @@
+
 module.exports = {
   api: {
     port: process.env.API_PORT || 3100
@@ -27,8 +28,8 @@ module.exports = {
 
     urlLogoEmpresa:
       "https://crih.qosolutionsgt.com/CRIHLOGO.png",
-    urlImgFooter: "https://did.fafg.org/imagePassword.jpg",
-    urlWebResetPassWord: "https://did.fafg.org/auth/update-password/",
+    urlImgFooter: "https://crih.qosolutionsgt.com/imagePassword.jpg",
+    urlWebResetPassWord: "https://crih.qosolutionsgt.com/auth/update-password/",
     minutosVigenciaEnlace: 10,
     emailDefault: "oqsolutionsgt@gmail.com"
   },
@@ -39,12 +40,16 @@ module.exports = {
     default: "bertoni.giron@fafg.org"
   },
   optionsHtmlPdf: {
-    //port:9222
+    port:9222
   },
   s3Params: {
-    accessKeyId: "AKIA3ZGPLHEWJNJKJBMW",
-    secretAccessKey: "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",
+    accessKeyId: "AKIA3ZGPLHEWBVXRLYX7",
+    secretAccessKey: "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",
     Bucket: "crihproducoahuila",
     Region: "us-east-1"
   }
 };
+
+
+
+
