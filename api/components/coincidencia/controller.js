@@ -321,7 +321,7 @@ const listResponsables = async (req) => {
     ],
     where: {
       usuarioId: {
-        [Op.in]: [2, 3, 4, 5, 6, 73]
+        [Op.in]: [2, 3, 4, 5, 6, 8,9,12]
       }
     }
   }));

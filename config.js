@@ -43,8 +43,8 @@ module.exports = {
     port:9222
   },
   s3Params: {
-    accessKeyId: "AKIA3ZGPLHEWBVXRLYX7",
-    secretAccessKey: "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",
+    //accessKeyId: "AKIA3ZGPLHEWBVXRLYX7",
+    //secretAccessKey: "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",
     Bucket: "crihproducoahuila",
     Region: "us-east-1"
   }

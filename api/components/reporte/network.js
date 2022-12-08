@@ -15,6 +15,7 @@ const postCoincidencia = (req, res, next) => {
   };
 
   const postIdentificadoSmih = (req, res, next) => {
+   
     controller
       .repIdentificadoSmih(req)
       .then((identificado) => { 

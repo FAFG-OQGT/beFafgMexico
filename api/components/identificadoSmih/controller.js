@@ -415,7 +415,8 @@ const getReporte = async (req) => {
     tipoCaso = ident.TipoCasoDid.descripcion;
   }
 
-  if (!ident.CausaMuerte.descripcion) {
+  console.log('paso aca ',ident.CausaMuerte)
+  if ((!ident.CausaMuerte) || (!ident.CausaMuerte.descripcion)) {
     tipoCausaMuerte = "null";
   } else {
     tipoCausaMuerte = ident.CausaMuerte.descripcion;
@@ -426,7 +427,6 @@ const getReporte = async (req) => {
   } else {
     resumenH = ident.resumenHecho;
   }
-
   var htmlRep = "";
   var path = require("path");
   var pathA = path.join(
