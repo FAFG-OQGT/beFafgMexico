@@ -140,8 +140,8 @@ const repIdentificadoSmih = async (req) => {
           exclude: ["estadoId", "fechaHoraIngreso"],
         },
         where: sequelize.literal(
-          `IFNULL(concat('FAFG-',casoId,'-',fosaDet,'-',osamentaDet),-2) like IF('${req.body.osamenta}' = '',IFNULL(concat('FAFG-',casoId,'-',fosaDet,'-',osamentaDet),-2), '%${req.body.osamenta}%')` +
-            `AND IFNULL(concat('FAFG-',casoId,'-',fosaDet),-2) like IF('${req.body.fosa}' = '',IFNULL(concat('FAFG-',casoId,'-',fosaDet),-2), '%${req.body.fosa}%')` +
+          `IFNULL(concat('CRIH-',casoId,'-',fosaDet,'-',osamentaDet),-2) like IF('${req.body.osamenta}' = '',IFNULL(concat('CRIH-',casoId,'-',fosaDet,'-',osamentaDet),-2), '%${req.body.osamenta}%')` +
+            `AND IFNULL(concat('CRIH-',casoId,'-',fosaDet),-2) like IF('${req.body.fosa}' = '',IFNULL(concat('CRIH-',casoId,'-',fosaDet),-2), '%${req.body.fosa}%')` +
             `AND IFNULL(Osamenta.exhumacionAldea, '') like IF('${req.body.exhumacionAldea}' = '',IFNULL(Osamenta.exhumacionAldea, ''), '%${req.body.exhumacionAldea}%')` +
             ` AND IFNULL(Osamenta.exhumacionMuniId, -1) = IF(${req.body.exhumacionMuniId} = -1,IFNULL(Osamenta.exhumacionMuniId, -1),${req.body.exhumacionMuniId})` +
             ` AND IFNULL(Osamenta.exhumacionDeptoId, -1) = IF(${req.body.exhumacionDeptoId} = -1,IFNULL(Osamenta.exhumacionDeptoId, -1),${req.body.exhumacionDeptoId})` +
@@ -384,8 +384,8 @@ const repIdentificadoOst = async (req) => {
           exclude: ["estadoId", "fechaHoraIngreso"],
         },
         where: sequelize.literal(
-          `concat('FAFG-',casoId,'-',fosaDet,'-',osamentaDet) like IF('${req.body.osamenta}' = '',concat('FAFG-',casoId,'-',fosaDet,'-',osamentaDet), '%${req.body.osamenta}%')` +
-            `AND IFNULL(concat('FAFG-',casoId,'-',fosaDet), -1) like IF('${req.body.fosa}' = '',IFNULL(concat('FAFG-',casoId,'-',fosaDet), -1), '%${req.body.fosa}%')` +
+          `concat('CRIH-',casoId,'-',fosaDet,'-',osamentaDet) like IF('${req.body.osamenta}' = '',concat('CRIH-',casoId,'-',fosaDet,'-',osamentaDet), '%${req.body.osamenta}%')` +
+            `AND IFNULL(concat('CRIH-',casoId,'-',fosaDet), -1) like IF('${req.body.fosa}' = '',IFNULL(concat('CRIH-',casoId,'-',fosaDet), -1), '%${req.body.fosa}%')` +
             `AND IFNULL(Osamenta.exhumacionAldea, '') like IF('${req.body.exhumacionAldea}' = '',IFNULL(Osamenta.exhumacionAldea, ''), '%${req.body.exhumacionAldea}%')` +
             ` AND IFNULL(Osamenta.exhumacionMuniId, -1) = IF(${req.body.exhumacionMuniId} = -1,IFNULL(Osamenta.exhumacionMuniId, -1),${req.body.exhumacionMuniId})` +
             ` AND IFNULL(Osamenta.exhumacionDeptoId, -1) = IF(${req.body.exhumacionDeptoId} = -1,IFNULL(Osamenta.exhumacionDeptoId, -1),${req.body.exhumacionDeptoId})` +
@@ -561,7 +561,7 @@ const repCoincidencia = async (req) => {
         ],
         where: sequelize.literal(
           `Osamenta.casoId = IF(${req.body.casoId} = -1,Osamenta.casoId,${req.body.casoId})` +
-            `AND IFNULL(concat('FAFG-',casoId,'-',fosaDet,'-',osamentaDet),-2) like IF('${req.body.osamenta}' = '',IFNULL(concat('FAFG-',casoId,'-',fosaDet,'-',osamentaDet),-2), '%${req.body.osamenta}%')` +
+            `AND IFNULL(concat('CRIH-',casoId,'-',fosaDet,'-',osamentaDet),-2) like IF('${req.body.osamenta}' = '',IFNULL(concat('CRIH-',casoId,'-',fosaDet,'-',osamentaDet),-2), '%${req.body.osamenta}%')` +
             ` AND IFNULL(Osamenta.sexoAdnId,-1) = IF(${req.body.sexoAdnId} = -1,IFNULL(Osamenta.sexoAdnId,-1),${req.body.sexoAdnId})` +
             ` AND IFNULL(Osamenta.locisAlelosUtiles,-2) = IF(${req.body.locisAlelosUtiles} = -1,IFNULL(Osamenta.locisAlelosUtiles,-2),${req.body.locisAlelosUtiles})`
         ),

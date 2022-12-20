@@ -1,7 +1,7 @@
 {
-  "name": "befafg",
+  "name": "befafgmexico",
   "version": "1.0.0",
-  "description": "Backend API FAFG",
+  "description": "Backend API CRIH",
   "main": "api/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

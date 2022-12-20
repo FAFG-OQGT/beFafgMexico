@@ -1,9 +1,9 @@
 {
     "swagger": "2.0",
     "info": {
-      "description": "Api Backend FAFG, desarrollo en NodeJS",
+      "description": "Api Backend CRIH, desarrollo en NodeJS",
       "version": "1.0.0",
-      "title": "FAFG-OQSoluttions",
+      "title": "CRIH-OQSoluttions",
       "termsOfService": "http://oqsolutionsgt.com/",
       "contact": {
         "email": "contacto@oqsolutionsgt.com"

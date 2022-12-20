@@ -17,10 +17,10 @@ const insert = async (req) => {
   // if (result.error) {
   //   throw error(result.error.details[0].message);
   // }
-  //console.log(`concat('FAFG-',${req.body.casoId},'-',${req.body.casoId},'-',${req.body.osamentaDet})`)
+  //console.log(`concat('CRIH-',${req.body.casoId},'-',${req.body.casoId},'-',${req.body.osamentaDet})`)
   const osamentaCheck = await Osamenta.findOne({
     where: sequelize.literal(
-      `concat('FAFG-',casoId,'-',fosaDet,'-',osamentaDet) = concat('FAFG-','${req.body.casoId}','-','${req.body.fosaDet}','-','${req.body.osamentaDet}')`
+      `concat('CRIH-',casoId,'-',fosaDet,'-',osamentaDet) = concat('CRIH-','${req.body.casoId}','-','${req.body.fosaDet}','-','${req.body.osamentaDet}')`
     ),
   });
   if (osamentaCheck) {
@@ -82,7 +82,7 @@ const list = async (req) => {
       `(casoId like '%${filtro}%')` + 
       ` or (fosaDet like '%${filtro}%')` +
       ` or (osamentaDet like '%${filtro}%')` +
-      ` or (concat('FAFG','-',casoId,'-',fosaDet,'-',osamentaDet) like '%${filtro}%')` +
+      ` or (concat('CRIH','-',casoId,'-',fosaDet,'-',osamentaDet) like '%${filtro}%')` +
       ` or (exhumacionAldea like '%${filtro}%')` +
       ` or (coordenadasExhumacion like '%${filtro}%')` +
       ` or (MuniExhumacion.descripcion like '%${filtro}%')` +

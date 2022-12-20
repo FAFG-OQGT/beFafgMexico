@@ -115,7 +115,7 @@ const codigoOsamenta = async (pCodigoOsamenta) => {
   });
 
   return (
-    "FAFG-" +
+    "CRIH-" +
     osamenta.casoId +
     "-" +
     osamenta.fosaDet +
@@ -321,7 +321,7 @@ const listResponsables = async (req) => {
     ],
     where: {
       usuarioId: {
-        [Op.in]: [2, 3, 4, 5, 6, 8,9,12]
+        [Op.in]: [8,9,12]
       }
     }
   }));
@@ -355,7 +355,7 @@ const list = async (req) => {
         ` or (Osamenta.casoId like '%${filtro}%')` +
         ` or (Osamenta.fosaDet like '%${filtro}%')` +
         ` or (Osamenta.osamentaDet like '%${filtro}%')` +
-        ` or (concat('FAFG','-',Osamenta.casoId,'-',Osamenta.fosaDet,'-',Osamenta.osamentaDet) like '%${filtro}%')` +
+        ` or (concat('CRIH','-',Osamenta.casoId,'-',Osamenta.fosaDet,'-',Osamenta.osamentaDet) like '%${filtro}%')` +
         ` or (fechaCoincidencia like '%${filtro}%')` +
         ` or (apriori like '%${filtro}%')` +
         ` or (posterior like '%${filtro}%')` +
@@ -1031,7 +1031,7 @@ const getReporte = async (req) => {
   );
   htmlRep = htmlRep.replace(
     "@OSAMENTA",
-    "FAFG-" +
+    "CRIH-" +
       coi.Osamenta.casoId +
       "-" +
       coi.Osamenta.fosaDet +

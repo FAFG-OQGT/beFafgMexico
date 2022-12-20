@@ -98,7 +98,7 @@ const codigoOsamenta = async (pCodigoOsamenta) => {
   });
 
   return (
-    "FAFG-" +
+    "CRIH-" +
     osamenta.casoId +
     "-" +
     osamenta.fosaDet +
@@ -520,11 +520,11 @@ const getReporte = async (req) => {
 
   htmlRep = htmlRep.replace(
     "@IDENTIFICADOID",
-    "FAFG-" + ident.identificadoSmihId
+    "CRIH-" + ident.identificadoSmihId
   );
   htmlRep = htmlRep.replace(
     "@OSAMENTA",
-    "FAFG-" +
+    "CRIH-" +
       ident.Osamenta.casoId +
       "-" +
       ident.Osamenta.fosaDet +
@@ -735,7 +735,7 @@ const list = async (req) => {
         ` or (desaparicionMes like '%${filtro}%')` +
         ` or (desaparicionAnio like '%${filtro}%')` +
         ` or (sesionIdentificacion like '%${filtro}%')` +
-        ` or (concat('FAFG','-',Osamenta.casoId,'-',Osamenta.fosaDet,'-',Osamenta.osamentaDet) like '%${filtro}%')` +
+        ` or (concat('CRIH','-',Osamenta.casoId,'-',Osamenta.fosaDet,'-',Osamenta.osamentaDet) like '%${filtro}%')` +
         ` or (Victima.codigoVictima like '%${filtro}%')` +
         ` or (Victima.nombreVictima like '%${filtro}%')` +
         ` or (Sexo.descripcion like '%${filtro}%')` +
