@@ -50,8 +50,8 @@ module.exports = {
     //]
   },
   s3Params: {
-    accessKeyId: "AKIAYKVW644AWZL5WJHV",
-    secretAccessKey: "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",
+    //accessKeyId: "AKIAYKVW644AWZL5WJHV",
+    //secretAccessKey: "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",
     Bucket: "crihproducoahuila",
     Region: "us-east-1"
   }
