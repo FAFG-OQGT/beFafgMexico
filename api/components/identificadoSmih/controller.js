@@ -1,4 +1,5 @@
 var sequelize = require("sequelize");
+const pdf = require("html-pdf-chrome");
 var moment = require("moment");
 const controllerArchivo = require("../archivo/controller");
 var stream = require("stream");
@@ -6,7 +7,6 @@ const {getFileFromPath} = require("../../functions/fileFunction");
 const error = require("../../../utils/error");
 const email = require("../mail/controller");
 const config = require("../../../config");
-const pdf = require("html-pdf-chrome");
 const correocreacionIdent = config.correos.creacionCoincidencia;
 const {
   IdentificadoSmih,
@@ -369,11 +369,7 @@ const getReporte = async (req) => {
   } else {
     sexo = ident.Sexo.descripcion;
   }
-  if (!ident.TraumaCirc) {
-    trauma = "null";
-  } else {
-    trauma = ident.TraumaCirc.descripcion;
-  }
+
   if (!ident.Coincidencia.apriori) {
     apriori = "null";
   } else {
@@ -415,8 +411,8 @@ const getReporte = async (req) => {
     tipoCaso = ident.TipoCasoDid.descripcion;
   }
 
-  console.log('paso aca ',ident.CausaMuerte)
-  if ((!ident.CausaMuerte) || (!ident.CausaMuerte.descripcion)) {
+  console.log("paso aca ", ident.CausaMuerte);
+  if (!ident.CausaMuerte || !ident.CausaMuerte.descripcion) {
     tipoCausaMuerte = "null";
   } else {
     tipoCausaMuerte = ident.CausaMuerte.descripcion;
@@ -588,7 +584,6 @@ const getReporte = async (req) => {
   );
   htmlRep = htmlRep.replace(/null/g, "");
   htmlRep = htmlRep.replace(/undefined/g, "");
-
   var options = config.optionsHtmlPdf;
   const pdfIdent = await pdf.create(htmlRep, options);
   //await pdfIdent.toFile("Ident.pdf");
@@ -671,13 +666,6 @@ const list = async (req) => {
         }
       },
       {
-        model: TraumaCirc,
-        as: "TraumaCirc",
-        attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"]
-        }
-      },
-      {
         model: DatosOdont,
         as: "DatosOdont",
         attributes: {
@@ -742,7 +730,6 @@ const list = async (req) => {
         ` or (GrupoEtario.descripcion like '%${filtro}%')` +
         ` or (GrupoEtnolinguistico.descripcion like '%${filtro}%')` +
         ` or (TipoCasoDid.descripcion like '%${filtro}%')` +
-        ` or (TraumaCirc.descripcion like '%${filtro}%')` +
         ` or (RegionAnatomica.descripcion like '%${filtro}%')` +
         ` or (MuniDesap.descripcion like '%${filtro}%')` +
         ` or (DeptoDesap.descripcion like '%${filtro}%')`
@@ -898,13 +885,7 @@ const searchById = async (req) => {
           exclude: ["estadoId", "fechaHoraIngreso"]
         }
       },
-      {
-        model: TraumaCirc,
-        as: "TraumaCirc",
-        attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"]
-        }
-      },
+
       {
         model: DatosOdont,
         as: "DatosOdont",

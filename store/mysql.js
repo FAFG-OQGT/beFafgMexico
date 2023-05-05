@@ -402,11 +402,7 @@ IdentificadoSmih.belongsTo(ValorEdad, {
   foreignKey: "valorEdadPM",
   onDelete: "CASCADE",
 });
-IdentificadoSmih.belongsTo(TraumaCirc, {
-  as: "TraumaCirc",
-  foreignKey: "traumaCircId",
-  onDelete: "CASCADE",
-});
+ 
 IdentificadoSmih.belongsTo(DatosOdont, {
   as: "DatosOdont",
   foreignKey: "datosOdontId",
@@ -752,7 +748,7 @@ module.exports = {
   AnotacionCoincidencia,
   NotaLabGenetica,
   DonanteCoincidencia,
-  SolicitudSeguimiento,
+  SolicitudSeguimiento, 
   TraumaCirc,
   GrupoEtario,
   RegionAnatomica,

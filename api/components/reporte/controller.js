@@ -19,8 +19,7 @@ const {
   Genero,
   GrupoEtario,
   GrupoEtnolinguistico,
-  ValorEdad,
-  TraumaCirc,
+  ValorEdad, 
   DatosOdont,
   RegionAnatomica,
   SexoAdn,
@@ -259,13 +258,7 @@ const repIdentificadoSmih = async (req) => {
           exclude: ["estadoId", "fechaHoraIngreso"],
         },
       },
-      {
-        model: TraumaCirc,
-        as: "TraumaCirc",
-        attributes: {
-          exclude: ["estadoId", "fechaHoraIngreso"],
-        },
-      },
+ 
       {
         model: DatosOdont,
         as: "DatosOdont",
@@ -313,7 +306,6 @@ const repIdentificadoSmih = async (req) => {
         ` AND IFNULL(identificado_smih.rangoMinimoPM, -1) >= IF(${req.body.rangoMinimoPM} = -1,IFNULL(identificado_smih.rangoMinimoPM, -1),${req.body.rangoMinimoPM})` +
         ` AND IFNULL(identificado_smih.rangoMaximoPM, -1) <= IF(${req.body.rangoMaximoPM} = -1,IFNULL(identificado_smih.rangoMaximoPM, -1),${req.body.rangoMaximoPM})` +
         ` AND IFNULL(identificado_smih.valorEdadPM, -1) = IF(${req.body.valorEdadPM} = -1,IFNULL(identificado_smih.valorEdadPM, -1),${req.body.valorEdadPM})` +
-        ` AND IFNULL(identificado_smih.traumaCircId, -1) = IF(${req.body.traumaCircId} = -1,IFNULL(identificado_smih.traumaCircId, -1),${req.body.traumaCircId})` +
         ` AND IFNULL(identificado_smih.datosOdontId, -1) = IF(${req.body.datosOdontId} = -1,IFNULL(identificado_smih.datosOdontId, -1),${req.body.datosOdontId})` +
         ` AND IFNULL(identificado_smih.regionAnatomicaId, -1) = IF(${req.body.regionAnatomicaId} = -1,IFNULL(identificado_smih.regionAnatomicaId, -1),${req.body.regionAnatomicaId})` +
         ` AND IFNULL(identificado_smih.causaMuerteId, -1) = IF(${req.body.causaMuerteId} = -1,IFNULL(identificado_smih.causaMuerteId, -1),${req.body.causaMuerteId})` +
@@ -332,8 +324,6 @@ const repIdentificadoSmih = async (req) => {
         ` AND IFNULL(identificado_smih.fechaInfoFamilia, '') <= IF(${req.body.fechaInfoFamiliaFin} is null,IFNULL(identificado_smih.fechaInfoFamilia, ''),${req.body.fechaInfoFamiliaFin})` +
         ` AND IFNULL(identificado_smih.fechaDictamen, '') >= IF(${req.body.fechaDictamenIni} is null,IFNULL(identificado_smih.fechaDictamen, ''),${req.body.fechaDictamenIni})` +
         ` AND IFNULL(identificado_smih.fechaDictamen, '') <= IF(${req.body.fechaDictamenFin} is null,IFNULL(identificado_smih.fechaDictamen, ''),${req.body.fechaDictamenFin})` +
-        ` AND IFNULL(identificado_smih.fechaInhumacion, '') >= IF(${req.body.fechaInhumacionIni} is null,IFNULL(identificado_smih.fechaInhumacion, ''),${req.body.fechaInhumacionIni})` +
-        ` AND IFNULL(identificado_smih.fechaInhumacion, '') <= IF(${req.body.fechaInhumacionFin} is null,IFNULL(identificado_smih.fechaInhumacion, ''),${req.body.fechaInhumacionFin})` +
         ` AND IFNULL(identificado_smih.fechaEntrevistaAM, '') >= IF(${req.body.fechaEntrevistaAMIni} is null,IFNULL(identificado_smih.fechaEntrevistaAM, ''),${req.body.fechaEntrevistaAMIni})` +
         ` AND IFNULL(identificado_smih.fechaEntrevistaAM, '') <= IF(${req.body.fechaEntrevistaAMFin} is null,IFNULL(identificado_smih.fechaEntrevistaAM, ''),${req.body.fechaEntrevistaAMFin})` +
         ` AND IFNULL(identificado_smih.fechaAnalisisOst, '') >= IF(${req.body.fechaAnalisisOstIni} is null,IFNULL(identificado_smih.fechaAnalisisOst, ''),${req.body.fechaAnalisisOstIni})` +

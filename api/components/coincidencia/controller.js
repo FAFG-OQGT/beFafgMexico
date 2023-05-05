@@ -1127,7 +1127,7 @@ const getFioPDF = async (req) => {
   } else {
     cauMuePM = fio.CausaMuertePM.descripcion;
   }
- 
+  
   var htmlFirma = `<img src="data:image/jpg;base64,${fio.Coincidencia.Usuario.firmaUsuario.toString(
     "base64"
   )}" width="200" height="160">`;

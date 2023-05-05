@@ -111,12 +111,8 @@ module.exports = (sequelize, type) => {
           notEmpty: true,
         },
       },
-      traumaCircId: {
-        type: type.INTEGER(5),
-        references: {
-          model: "cat_trauma_circ",
-          key: "traumaCircId",
-        },
+      traumaPM: {
+        type: type.STRING(500),
       },
       datosOdontId: {
         type: type.INTEGER(5),
@@ -151,7 +147,6 @@ module.exports = (sequelize, type) => {
       desaparicionAldea: {
         type: type.STRING(500),
         allowNull: true,
-         
       },
       desaparicionMuniId: {
         type: type.INTEGER(5),
@@ -184,7 +179,6 @@ module.exports = (sequelize, type) => {
       sesionIdentificacion: {
         type: type.STRING(180),
         allowNull: true,
-     
       },
       resumenHecho: {
         type: type.STRING(800),

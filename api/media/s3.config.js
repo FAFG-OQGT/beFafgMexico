@@ -1,5 +1,4 @@
 const AWS = require("aws-sdk");
-
 const config = require("../../config");
 
 const s3Params = config.s3Params;
